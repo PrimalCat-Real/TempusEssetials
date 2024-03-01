@@ -1,0 +1,40 @@
+package primalcat.tempus.packets;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+public class SoundPacketListener extends PacketAdapter {
+
+    public SoundPacketListener(Plugin plugin) {
+        super(plugin, PacketType.Play.Server.WORLD_EVENT);
+    }
+
+    @Override
+    public void onPacketSending(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        Player player = event.getPlayer();
+        int effectId = packet.getIntegers().read(0);
+//        System.out.println(effectId == 1038);
+//        System.out.println(effectId == 1023);
+        Location loc = packet.getBlockPositionModifier().read(0).toLocation(player.getWorld());
+
+        if(effectId == 1024 || effectId == 1023 || effectId == 1028){
+            if(player.getLocation().distance(loc) > 40){
+                event.setCancelled(true);
+            }
+        }
+
+//        if(effectId == 1038 || effectId == 1023 || effectId == 1028){
+////            if(player.getLocation().distance(loc) > 40){
+////
+////            }
+//            event.setCancelled(true);
+//        }
+
+    }
+}

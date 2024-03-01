@@ -1,0 +1,12 @@
+name: TempusEssentials
+version: '1.0-SNAPSHOT'
+main: primalcat.tempus.TempusEssentials
+api-version: '1.20'
+depend: [PlaceholderAPI, ProtocolLib ]
+commands:
+  playtime:
+    description: Отображает время игрока в игре
+    usage: /playtime
+  plhide:
+    description: Reloads the PL-Hide Plugin
+    usage: /plhide reload
