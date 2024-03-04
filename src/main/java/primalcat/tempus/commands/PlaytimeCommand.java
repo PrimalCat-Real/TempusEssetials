@@ -9,8 +9,6 @@ import primalcat.tempus.utils.Util;
 
 import java.util.concurrent.CompletableFuture;
 
-import static primalcat.tempus.utils.Util.*;
-
 public class PlaytimeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

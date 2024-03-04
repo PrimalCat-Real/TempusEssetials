@@ -50,10 +50,7 @@ public final class TempusEssentials extends JavaPlugin {
 //        this.createConfig();
 //        this.reloadConfig();
 
-
         initProtocolLib();
-
-
 
         // commands
         getCommand("playtime").setExecutor(new PlaytimeCommand());
@@ -67,6 +64,7 @@ public final class TempusEssentials extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new RemoveMending(), this);
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new RapidLeafDecay(), this);
+        Bukkit.getPluginManager().registerEvents(new DisablingEditSign(), this);
 
         // structures
 //        Bukkit.getPluginManager().registerEvents(new CustomEndStructureGenerator(), this);
