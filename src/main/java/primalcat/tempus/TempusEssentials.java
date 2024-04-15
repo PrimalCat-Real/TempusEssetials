@@ -9,10 +9,15 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import primalcat.tempus.chat.ChattyChatHook;
 import primalcat.tempus.commands.PlaytimeCommand;
+import primalcat.tempus.commands.SetRpNick;
 import primalcat.tempus.graves.listeners.EntityDeathListener;
 import primalcat.tempus.hidecommands.PlHideCmd;
 import primalcat.tempus.hidecommands.listeners.CommandListener;
@@ -22,12 +27,17 @@ import primalcat.tempus.hidecommands.listeners.OpListener;
 import primalcat.tempus.items.ItemManager;
 import primalcat.tempus.listeners.*;
 import primalcat.tempus.modules.PlayerParticles;
+import primalcat.tempus.packets.ChatPacketModifier;
 import primalcat.tempus.packets.SoundPacketListener;
+import primalcat.tempus.placeholders.OriginalPlayerName;
 import primalcat.tempus.placeholders.PlayTimeIconPlaceholder;
 import primalcat.tempus.structures.CustomEndStructureGenerator;
+import primalcat.tempus.utils.Util;
 import primalcat.tempus.villagers.RemoveMending;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static primalcat.tempus.hidecommands.Util.checkGroups;
 
@@ -42,18 +52,23 @@ public final class TempusEssentials extends JavaPlugin {
 
     public static ProtocolManager protocolManager;
 
-
+    public static Map<String, String> customRpNicks;
+    public static LuckPerms api;
     @Override
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
-//        this.createConfig();
+        this.createConfig();
+        customRpNicks = Util.readPlayersAndCreateMap(this.getDataFolder() + "/database.db");
+//        getLogger().info("Test db base " + customRpNicks.toString());
 //        this.reloadConfig();
 
         initProtocolLib();
 
         // commands
         getCommand("playtime").setExecutor(new PlaytimeCommand());
+        getCommand("setrpnick").setExecutor(new SetRpNick());
+
         // hide commands
 //        checkGroups();
 //        this.initListeners();
@@ -65,6 +80,9 @@ public final class TempusEssentials extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new RapidLeafDecay(), this);
         Bukkit.getPluginManager().registerEvents(new DisablingEditSign(), this);
+        Bukkit.getPluginManager().registerEvents(new BoatPlace(), this);
+//        Bukkit.getPluginManager().registerEvents(new ChattyChatHook(), this);
+
 
         // structures
 //        Bukkit.getPluginManager().registerEvents(new CustomEndStructureGenerator(), this);
@@ -82,6 +100,11 @@ public final class TempusEssentials extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ItemManager(), this);
         Bukkit.getPluginManager().registerEvents(new LightBlockListener(), this);
 
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider != null) {
+            api = provider.getProvider();
+
+        }
 
 //        Bukkit.getScheduler().runTaskTimer(this, playerParticles::spawnParticlesForAllPlayers, 0L, 20L); // 20 ticks = 1 second
     }
@@ -89,6 +112,7 @@ public final class TempusEssentials extends JavaPlugin {
     private void initProtocolLib(){
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         protocolManager.addPacketListener(new SoundPacketListener(this));
+//        protocolManager.addPacketListener(new ChatPacketModifier(this));
     }
 
     // plhide
@@ -105,6 +129,7 @@ public final class TempusEssentials extends JavaPlugin {
         if (!customConfigFile.exists()) {
             this.saveDefaultConfig();
         }
+        Util.createDB(this.getDataFolder());
     }
 
     @Override
@@ -120,12 +145,14 @@ public final class TempusEssentials extends JavaPlugin {
 //        System.out.println("hooking " + Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null);
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlayTimeIconPlaceholder().register();
+            new OriginalPlayerName().register();
         }
     }
 
     private void papiUnhook() {
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlayTimeIconPlaceholder().unregister();
+            new OriginalPlayerName().unregister();
         }
     }
 }
