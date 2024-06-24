@@ -1,0 +1,19 @@
+name: TempusEssential
+author: PrimalCat
+main: primalcat.tempusessential.TempusEssential
+website: https://groupez.dev
+description: Default plugin developed by GroupeZ
+version: 1.0.0
+api-version: 1.13
+depend: [PlaceholderAPI,ProtocolLib]
+commands:
+  copybook:
+    description: Копирует содержимое из подписанной книги в неподписанную книгу.
+    usage: /copybook
+  playtime:
+    description: Отображает время игрока в игре
+    usage: /playtime
+  setrpnick:
+    description: Устанавливает рп никнейм
+    usage: /setrpnick
+

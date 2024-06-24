@@ -1,0 +1,135 @@
+modules:
+  rapid-leaf-decay: true
+  drop-chances:
+    enabled: true
+    mobs:
+      # chance for drop item
+      EVOKER:
+        TOTEM_OF_UNDYING: 0.02
+      ZOMBIFIED_PIGLIN:
+        GOLD_NUGGET: 0.05
+      VINDICATOR:
+        EMERALD: 0.05
+  custom-sign: true
+  kill-empty-boats: true
+  copybook: true
+  stop-items-on-death: true
+  bosses-mute: true
+#  a lot of villager trades config
+  villager-trade-modifier:
+    enabled: true
+    armorer:
+      trades:
+        - originalItem:
+            item: DIAMOND_HELMET
+          newItem:
+            item: GOLDEN_HELMET
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_CHESTPLATE
+          newItem:
+            item: GOLDEN_CHESTPLATE
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_LEGGINGS
+          newItem:
+            item: GOLDEN_LEGGINGS
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_BOOTS
+          newItem:
+            item: GOLDEN_BOOTS
+          maxUses: 10
+    weaponsmith:
+      trades:
+        - originalItem:
+            item: DIAMOND_SWORD
+          newItem:
+            item: GOLDEN_SWORD
+          maxUses: 10
+    toolsmith:
+      trades:
+        - originalItem:
+            item: DIAMOND_PICKAXE
+          newItem:
+            item: GOLDEN_PICKAXE
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_AXE
+          newItem:
+            item: GOLDEN_AXE
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_SHOVEL
+          newItem:
+            item: GOLDEN_SHOVEL
+          maxUses: 10
+        - originalItem:
+            item: DIAMOND_HOE
+          newItem:
+            item: GOLDEN_HOE
+          maxUses: 10
+
+    librarian:
+      trades:
+        - originalItem:
+            item: ENCHANTED_BOOK
+            enchantments:
+              - type: MENDING
+                level: 1
+          newItem:
+            item: ENCHANTED_BOOK
+            lore: [ "Book of Balance" ]
+            enchantments:
+              - type: DAMAGE_UNDEAD
+                level: 6
+          maxUses: 1
+  playtime-rewards:
+    enabled: true
+    milestones:
+      - hours: 2
+        icon: "🐔"
+      - hours: 6
+        icon: "🌳"
+      - hours: 12
+        icon: "🍖"
+      - hours: 24
+        icon: "✂"
+      - hours: 36
+        icon: "🪓"
+      - hours: 72
+        icon: "⛏"
+      - hours: 96
+        icon: "🎣"
+      - hours: 120
+        icon: "⚔"
+      - hours: 144
+        icon: "🗡"
+      - hours: 200
+        icon: "🏹"
+      - hours: 260
+        icon: "☄"
+      - hours: 336
+        icon: "🧪"
+      - hours: 432
+        icon: "🔱"
+      - hours: 576
+        icon: "♬"
+      - hours: 720
+        icon: "⚗"
+      - hours: 960
+        icon: "🐲"
+      - hours: 1111
+        icon: "⭐"
+      - hours: 1500
+        icon: "🔥"
+      - hours: 1984
+        icon: "☠"
+      - hours: 2488
+        icon: "❤"
+      - hours: 3000
+        icon: "☯"
+
+  rp-nicks: true
+  right-click-farmland: true
+  shullker-bag: true

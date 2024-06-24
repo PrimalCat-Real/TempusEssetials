@@ -1,0 +1,6 @@
+[17:56:24] [Paper Plugin Remapper Thread - 1/INFO]: [ReobfServer] Remapping server...
+[17:56:29] [Paper Plugin Remapper Thread - 1/INFO]: [ReobfServer] Done remapping server in 4875ms.
+[17:56:29] [Paper Plugin Remapper Thread - 1/INFO]: [PluginRemapper] Remapping plugin 'cache\spark.jar'...
+[17:56:30] [Paper Plugin Remapper Thread - 1/INFO]: [PluginRemapper] Done remapping plugin 'cache\spark.jar' in 735ms.
+[17:56:36] [ServerMain/WARN]: Failed to load eula.txt
+[17:56:36] [ServerMain/INFO]: You need to agree to the EULA in order to run the server. Go to eula.txt for more info.
