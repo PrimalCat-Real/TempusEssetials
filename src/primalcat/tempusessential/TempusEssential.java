@@ -19,6 +19,7 @@ import primalcat.tempusessential.RPNames.SetRpNickCommand;
 import primalcat.tempusessential.RapidLeafDecay.RapidLeafDecay;
 import primalcat.tempusessential.RightClickFarmland.RightClickFarmland;
 import primalcat.tempusessential.StopItemsOnDeath.StopItemsOnDeath;
+import primalcat.tempusessential.StrongerDragon.DragonAttackListener;
 import primalcat.tempusessential.VillagerTradeModifier.VillagerTradeModifier;
 import primalcat.tempusessential.placeholder.LocalPlaceholder;
 import primalcat.tempusessential.utils.SQLUtils;
@@ -122,6 +123,10 @@ public class TempusEssential extends JavaPlugin {
 
         if(getConfig().getBoolean("modules.custom-nether-portal")){
             Bukkit.getPluginManager().registerEvents(new CustomNetherPortalListener(this), this);
+        }
+
+        if(getConfig().getBoolean("modules.stronger-dragon")){
+            Bukkit.getPluginManager().registerEvents(new DragonAttackListener(), this);
         }
         
         // @TODO allot of dupes, bags and etc, needs to be fixed
