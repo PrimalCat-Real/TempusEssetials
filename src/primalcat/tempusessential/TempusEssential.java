@@ -11,6 +11,7 @@ import primalcat.tempusessential.BossesMute.BossesMute;
 import primalcat.tempusessential.CustomSign.CustomSign;
 import primalcat.tempusessential.DropChanceFix.DropChanceFix;
 import primalcat.tempusessential.KillEmptyBoats.KillEmptyBoats;
+import primalcat.tempusessential.NetherPortal.CustomNetherPortalListener;
 import primalcat.tempusessential.PlayTime.PlayTimeCommand;
 import primalcat.tempusessential.PlayTime.PlayTimeIconPlaceholder;
 import primalcat.tempusessential.RPNames.RPNamePlaceholder;
@@ -117,6 +118,10 @@ public class TempusEssential extends JavaPlugin {
 
         if (getConfig().getBoolean("modules.right-click-farmland")) {
             getServer().getPluginManager().registerEvents(new RightClickFarmland(), this);
+        }
+
+        if(getConfig().getBoolean("modules.custom-nether-portal")){
+            Bukkit.getPluginManager().registerEvents(new CustomNetherPortalListener(this), this);
         }
         
         // @TODO allot of dupes, bags and etc, needs to be fixed
