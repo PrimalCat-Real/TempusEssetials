@@ -23,9 +23,15 @@ public class RPNamePlaceholder extends PlaceholderExpansion {
     }
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
-        String nickname = TempusEssential.customRpNicks.getOrDefault(player.getName(), player.getName());
+//        String nickname = TempusEssential.customRpNicks.getOrDefault(player.getName(), player.getName());
 
-        return nickname;
+        String nickname = TempusEssential.customRpNicks.get(player.getName());
+        if(nickname != null){
+            return nickname;
+        }else{
+            return player.getName();
+        }
+
     }
 
 }
