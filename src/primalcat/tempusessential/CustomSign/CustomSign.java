@@ -1,6 +1,7 @@
 package primalcat.tempusessential.CustomSign;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -25,11 +26,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import primalcat.tempusessential.TempusEssential;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class CustomSign implements Listener {
     private Plugin plugin = TempusEssential.getPlugin();
 
+    private boolean hologramCreated = false;
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -44,10 +47,13 @@ public class CustomSign implements Listener {
             if (isSignBlock(blockType) && handItem.getType() == Material.AMETHYST_SHARD) {
                 if (!player.hasPermission("tempusessential.sethologram")) return;
                 // Создание голограммы при наличии аметистового осколка в руке
+                if (clickedBlock.getState() instanceof Sign) {
                 createTextDisplay((Sign) clickedBlock.getState(), player);
-                clickedBlock.setType(Material.AIR); // Удаление таблички после создания голограммы
-                if (player.getGameMode() != GameMode.CREATIVE) {
-                    handItem.setAmount(handItem.getAmount() - 1); // Расход аметистового осколка, если не в режиме творчества
+                    clickedBlock.setType(Material.AIR); // Удаление таблички после создания голограммы
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        handItem.setAmount(handItem.getAmount() - 1); // Расход аметистового осколка, если не в режиме творчества
+                    }
+                    hologramCreated = true;
                 }
             }
 
@@ -66,19 +72,20 @@ public class CustomSign implements Listener {
             }
         }
 
-        if ((action == Action.RIGHT_CLICK_BLOCK) && handItem.getType() == Material.AMETHYST_SHARD) {
+        if (!hologramCreated && action == Action.RIGHT_CLICK_BLOCK && handItem.getType() == Material.AMETHYST_SHARD) {
             if (!player.hasPermission("tempusessential.removehologram")) return;
-            // Поиск и удаление ближайшей голограммы при клике в воздух или по другому блоку с аметистовым осколком в руке
             TextDisplay nearestDisplay = findNearestTextDisplay(player);
             if (nearestDisplay != null) {
                 nearestDisplay.remove();
                 player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1.0f, 1.0f);
-//                player.sendMessage(ChatColor.GREEN + "Голограмма удалена.");
                 if (player.getGameMode() != GameMode.CREATIVE) {
                     handItem.setAmount(handItem.getAmount() - 1);
                 }
             }
         }
+
+        // Сброс флага после обработки события
+        hologramCreated = false;
     }
 
     private TextDisplay findNearestTextDisplay(Player player) {
@@ -92,6 +99,7 @@ public class CustomSign implements Listener {
         Vector signRotation = getSignRotation(sign.getBlockData());
         if (signRotation != null) {
             TextDisplay textDisplay = (TextDisplay) player.getWorld().spawnEntity(sign.getLocation().add(0.5, 0.5, 0.5).setDirection(signRotation), EntityType.TEXT_DISPLAY);
+
             applyStylesToTextDisplay(sign, textDisplay);
             player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_PLACE, 1.0f, 1.0f);
         }
@@ -107,10 +115,20 @@ public class CustomSign implements Listener {
     }
 
     private void applyStylesToTextDisplay(Sign sign, TextDisplay textDisplay) {
-        TextColor textColor = TextColor.color(sign.getColor().getColor().asRGB());
-        Component textComponent = Component.text(String.join("\n", sign.getLines()), textColor);
+     TextColor textColor = sign.getColor() != null ? TextColor.color(sign.getColor().getColor().asRGB()) : NamedTextColor.WHITE;
+
+        // Объединение всех строк из таблички в один компонент текста
+        Component combinedText = Component.empty();
+        for (Component line : sign.lines()) {
+            combinedText = combinedText.append(line).append(Component.text("\n"));
+        }
+
+        // Установка цвета текста (если необходимо)
+        combinedText = combinedText.color(textColor);
+
+        // Установка свойств TextDisplay
         textDisplay.setGlowing(sign.isGlowingText());
-        textDisplay.setText(LegacyComponentSerializer.legacySection().serialize(textComponent));
+        textDisplay.text(combinedText);
     }
 
     private void consumeItem(Player player, ItemStack item) {

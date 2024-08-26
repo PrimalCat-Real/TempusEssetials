@@ -9,6 +9,12 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>bytecode.space</id>
+            <url>https://repo.bytecode.space/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
@@ -59,11 +65,44 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>ca.bkaw</groupId>
+                <artifactId>paper-nms-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>remap</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+<!--                    <devBundle>-->
+<!--                        <id>forktest-nms</id>-->
+<!--                        &lt;!&ndash; The repository to download the dev-bundle from &ndash;&gt;-->
+<!--                        <repository>-->
+<!--                            <id>myrepo</id>-->
+<!--                            <url>https://repo.example.com/repository/maven-public/</url>-->
+<!--                        </repository>-->
+<!--                        <artifact>-->
+<!--                            <groupId>com.example.paperfork</groupId>-->
+<!--                            <artifactId>dev-bundle</artifactId>-->
+<!--                            <version>1.21-R0.1-SNAPSHOT</version>-->
+<!--                        </artifact>-->
+<!--                    </devBundle>-->
+                </configuration>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>io.papermc.paperweight</groupId>-->
+<!--                <artifactId>paperweight-userdev</artifactId>-->
+<!--                <version>1.7.1</version>-->
+<!--            </plugin>-->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -93,12 +132,33 @@
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>purpur</id>
+            <name>Purpur Maven Repo</name>
+            <url>https://repo.purpurmc.org/snapshots</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>com.github.Maxlego08</groupId>
             <artifactId>zTranslator</artifactId>
             <version>1.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ca.bkaw</groupId>
+            <artifactId>paper-nms</artifactId>
+            <version>1.21-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

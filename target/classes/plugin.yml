@@ -5,6 +5,7 @@ website: https://groupez.dev
 description: Default plugin developed by GroupeZ
 version: 1.0.0
 api-version: 1.13
+load: STARTUP
 depend: [PlaceholderAPI,ProtocolLib]
 commands:
   copybook:
@@ -16,4 +17,14 @@ commands:
   setrpnick:
     description: Устанавливает рп никнейм
     usage: /setrpnick
-
+  summonfox:
+    description: Summons a tamable fox.
+    usage: /summonfox
+    permission: tempusessential.summonfox
+  spawndragon:
+    description: Summon a custom Ender Dragon
+    usage: /spawndragon
+  ttabname:
+    permission: tempusessential.colortabname
+    description: "Set your tab name with a gradient."
+    usage: "/ttabname #color1 #color2"

@@ -2,9 +2,15 @@ package primalcat.tempusessential;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import primalcat.tempusessential.BookManager.CopyBook;
 //import primalcat.tempusessential.BossesMute.BossesMute;
 import primalcat.tempusessential.BossesMute.BossesMute;
@@ -19,7 +25,8 @@ import primalcat.tempusessential.RPNames.SetRpNickCommand;
 import primalcat.tempusessential.RapidLeafDecay.RapidLeafDecay;
 import primalcat.tempusessential.RightClickFarmland.RightClickFarmland;
 import primalcat.tempusessential.StopItemsOnDeath.StopItemsOnDeath;
-import primalcat.tempusessential.StrongerDragon.DragonAttackListener;
+import primalcat.tempusessential.StrongerDragon.*;
+import primalcat.tempusessential.TABaddon.ColorTabNameCommand;
 import primalcat.tempusessential.VillagerTradeModifier.VillagerTradeModifier;
 import primalcat.tempusessential.placeholder.LocalPlaceholder;
 import primalcat.tempusessential.utils.SQLUtils;
@@ -37,6 +44,8 @@ public class TempusEssential extends JavaPlugin {
         return plugin;
     }
 
+
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -51,6 +60,7 @@ public class TempusEssential extends JavaPlugin {
         placeholder.setPrefix("template");
 
     }
+
 
     @Override
     public void onDisable() {
@@ -83,10 +93,13 @@ public class TempusEssential extends JavaPlugin {
     }
 
     private void registerModules(){
+        if (getConfig().getBoolean("modules.tab-addon")) {
+            getCommand("ttabname").setExecutor(new ColorTabNameCommand());
+        }
         if (getConfig().getBoolean("modules.rapid-leaf-decay")) {
+
             getServer().getPluginManager().registerEvents(new RapidLeafDecay(), this);
         }
-
         if (getConfig().getBoolean("modules.drop-chances.enabled")) {
             getServer().getPluginManager().registerEvents(new DropChanceFix(), this);
         }
@@ -126,7 +139,12 @@ public class TempusEssential extends JavaPlugin {
         }
 
         if(getConfig().getBoolean("modules.stronger-dragon")){
-            Bukkit.getPluginManager().registerEvents(new DragonAttackListener(), this);
+//            getServer().getPluginManager().registerEvents(new CustomDragonSpawnListener(), this);
+//            this.getCommand("spawndragon").setExecutor(new SpawnDragonCommand());
+            getServer().getPluginManager().registerEvents(new DragonAttackListener(), this);
+            getServer().getPluginManager().registerEvents(new DragonEventListener(this), this);
+            getServer().getPluginManager().registerEvents(new EnderCrystalListener(this), this);
+            CustomEntityRegistry.replaceEnderDragonFactory();
         }
         
         // @TODO allot of dupes, bags and etc, needs to be fixed
@@ -135,5 +153,8 @@ public class TempusEssential extends JavaPlugin {
 //        }
 //        Bukkit.getPluginManager().registerEvents(new RemoveMending(), this);
     }
+
+
+
 
 }

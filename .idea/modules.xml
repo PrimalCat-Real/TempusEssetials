@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TemplatePlugin.iml" filepath="$PROJECT_DIR$/TemplatePlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/TempusEssential.iml" filepath="$PROJECT_DIR$/TempusEssential.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TempusEssential.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TempusEssential.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TempusEssential.test.iml" filepath="$PROJECT_DIR$/.idea/modules/TempusEssential.test.iml" />
     </modules>
   </component>
 </project>

@@ -1,15 +1,26 @@
 modules:
+  tab-addon: true
   rapid-leaf-decay: true
   drop-chances:
     enabled: true
     mobs:
       # chance for drop item
       EVOKER:
-        TOTEM_OF_UNDYING: 0.02
+        TOTEM_OF_UNDYING: 0.005
+        EMERALD: 0.005
       ZOMBIFIED_PIGLIN:
         GOLD_NUGGET: 0.05
       VINDICATOR:
-        EMERALD: 0.05
+        EMERALD: 0.005
+      PILLAGER:
+        EMERALD: 0.005
+      WITCH:
+        GLOWSTONE_DUST: 0.01
+        REDSTONE_DUST: 0.01
+        GUNPOWDER: 0.01
+        EMERALD: 0.005
+      WITHER_SKELETON:
+        WITHER_SKELETON_SKULL: 0.005
   custom-sign: true
   kill-empty-boats: true
   copybook: true
@@ -82,11 +93,13 @@ modules:
             lore: [ "Book of Balance" ]
             enchantments:
               - type: DAMAGE_UNDEAD
-                level: 6
+                level: 5
           maxUses: 1
   playtime-rewards:
     enabled: true
     milestones:
+      - hours: 0
+        icon: " "
       - hours: 2
         icon: "🐔"
       - hours: 6
@@ -135,3 +148,4 @@ modules:
   shullker-bag: true
   custom-nether-portal: true
   stronger-dragon: true
+  tamable-fox: true

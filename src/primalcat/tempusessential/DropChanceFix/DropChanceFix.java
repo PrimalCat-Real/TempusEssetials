@@ -37,8 +37,8 @@ public class DropChanceFix implements Listener {
 
 
                 // Учитываем зачарование Looting
-                int lootingLevel = entity.getKiller() != null ? entity.getKiller().getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS) : 0;
-                dropChance += 0.03 * lootingLevel; // Увеличиваем шанс на 3% за уровень Looting
+                int lootingLevel = entity.getKiller() != null ? entity.getKiller().getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOTING) : 0;
+                dropChance += 0.01 * lootingLevel; // Увеличиваем шанс на 1% за уровень Looting
 
                 if (random.nextDouble() > dropChance) {
                     event.getDrops().clear();

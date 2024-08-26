@@ -55,6 +55,19 @@ public class PlayTimeCommand implements CommandExecutor {
         Integer nextMilestoneHours = milestones.higherKey(secondsPlayed / 3600);
 
 
+        int totalHoursPlayed = secondsPlayed / 3600;
+        int totalMinutesPlayed = (secondsPlayed % 3600) / 60;
+        int totalRemainingSeconds = secondsPlayed % 60;
+
+        String totalHoursPlayedText = getCorrectForm(totalHoursPlayed, "час", "часа", "часов");
+        String totalMinutesPlayedText = getCorrectForm(totalMinutesPlayed, "минута", "минуты", "минут");
+        String totalSecondsPlayedText = getCorrectForm(totalRemainingSeconds, "секунда", "секунды", "секунд");
+
+        sender.sendMessage("§7Проведено в игре: §6"
+                + totalHoursPlayed + " " + totalHoursPlayedText + " "
+                + totalMinutesPlayed + " " + totalMinutesPlayedText + " "
+                + totalRemainingSeconds + " " + totalSecondsPlayedText);
+
         if (nextMilestoneHours != null) {
             int nextMilestoneSeconds = nextMilestoneHours * 3600;
             if (secondsPlayed < nextMilestoneSeconds) {
@@ -64,7 +77,7 @@ public class PlayTimeCommand implements CommandExecutor {
                 sender.sendMessage("«§6Поздравляем! §7 Вы достигли последней иконки. §cВаша преданность §l§qTEMPUS VANILLA §cзаслуживает похвалы, но не забывайте трогать траву или снег! §6#PressFForPersonalLife»");
             }
         } else {
-            sender.sendMessage("Ошибка: Не удалось определить следующий майлстоун.");
+            sender.sendMessage("Ошибка: Не удалось определить следующий значек.");
         }
 
 //        sender.sendMessage("You have played for " + hoursPlayed);
@@ -103,7 +116,7 @@ public class PlayTimeCommand implements CommandExecutor {
                 seconds + " " + secondsText);
     }
 
-    private String getCorrectForm(int number, String one, String few, String many) {
+    public static String getCorrectForm(int number, String one, String few, String many) {
         if (number % 10 == 1 && number % 100 != 11) {
             return one;
         } else if (number % 10 >= 2 && number % 10 <= 4 && (number % 100 < 10 || number % 100 >= 20)) {

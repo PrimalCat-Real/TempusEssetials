@@ -1,11 +1,9 @@
 package primalcat.tempusessential.RapidLeafDecay;
 
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -60,7 +58,7 @@ public class RapidLeafDecay implements Listener {
                         TempusEssential.getPlugin().getServer().getScheduler().runTaskLater(TempusEssential.getPlugin(), () -> {
                             this.decay(block);
                         }, delay);
-                        this.scheduledBlocks.add(block);
+                        scheduledBlocks.add(block);
                     }
                 }
             }
@@ -69,7 +67,7 @@ public class RapidLeafDecay implements Listener {
     }
 
     private boolean decay(Block block) {
-        if (!this.scheduledBlocks.remove(block)) {
+        if (!scheduledBlocks.remove(block)) {
             return false;
         } else if (!block.getWorld().isChunkLoaded(block.getX() >> 4, block.getZ() >> 4)) {
             return false;
@@ -87,7 +85,16 @@ public class RapidLeafDecay implements Listener {
                 if (event.isCancelled()) {
                     return false;
                 } else {
-                    block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation().add(0.5, 0.5, 0.5), 8, 0.2, 0.2, 0.2, 0.0, block.getType().createBlockData());
+                    // Создаем объект DustOptions для частицы DUST
+                    Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(0, 255, 0), 1.0F);
+
+                    BlockData blockData = block.getBlockData();
+
+                    // Спавним частицы разрушения блока в локации блока
+                    block.getWorld().spawnParticle(Particle.BLOCK, block.getLocation().add(0.5, 0.5, 0.5), 50, 0.3, 0.3, 0.3, blockData);
+                    // Спавним частицы с правильным объектом DustOptions
+//                    block.getWorld().spawnParticle(Particle.DUST, block.getLocation().add(0.5, 0.5, 0.5), 50, 0.5, 0.5, 0.5, 0.0, dustOptions);
+//                    block.getWorld().spawnParticle(Particle.DUST, block.getLocation().add(0.5, 0.5, 0.5), 8, 0.2, 0.2, 0.2, 0.0, dustOptions);
                     block.getWorld().playSound(block.getLocation(), Sound.BLOCK_GRASS_BREAK, SoundCategory.BLOCKS, 0.05F, 1.2F);
                     block.breakNaturally();
                     return true;
