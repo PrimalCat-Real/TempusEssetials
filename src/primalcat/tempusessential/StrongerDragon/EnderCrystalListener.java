@@ -87,7 +87,7 @@ public class EnderCrystalListener implements Listener {
                 World world = crystalLocation.getWorld();
 
                 // Найти всех эндерменов в радиусе 50 блоков от сломанного кристалла
-                double radius = 50.0;
+                double radius = 30.0;
                 List<Entity> nearbyEntities = world.getNearbyEntities(crystalLocation, radius, radius, radius).stream().toList();
 
                 for (Entity entity : nearbyEntities) {
