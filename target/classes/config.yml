@@ -1,4 +1,5 @@
 modules:
+  multiworld-join-fix: true
   tab-addon: true
   rapid-leaf-decay: true
   drop-chances:
