@@ -1,9 +1,15 @@
 package primalcat.tempusessential.StrongerDragon.phases;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import primalcat.tempusessential.StrongerDragon.CustomFireball;
 import primalcat.tempusessential.TempusEssential;
 
 public class DragonUltraFireballAttack {
@@ -12,14 +18,30 @@ public class DragonUltraFireballAttack {
     public static void startUltraFireballAttack(EnderDragon dragon, Player targetPlayer, World world) {
         Location dragonLocation = dragon.getLocation();
 
+//        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+//        LargeFireball nmsFireball = new LargeFireball(nmsWorld, ((CraftLivingEntity) dragon).getHandle(), 0, 0, 0); // Создаем NMS файербол
+//
+//        // Создаем кастомный файербол
+//        CustomFireball fireball = new CustomFireball((CraftServer) Bukkit.getServer(), nmsFireball);
         // Создаем файербол (сферу)
+
+        // Спавним файербол в мире
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+
+
+
         Fireball fireball = (Fireball) world.spawnEntity(dragonLocation.add(0, 2, 0), EntityType.FIREBALL);
+
         fireball.setCustomName("UltraFireball");
         fireball.setIsIncendiary(false);
         fireball.setYield(0); // Пока файербол не взрывается
+        fireball.setNoPhysics(true);
+        fireball.setVisualFire(false);
         fireball.setGravity(false); // Отключаем гравитацию для концентрации
         fireball.setVelocity(new Vector(0, 0, 0)); // Фиксируем позицию при кастовании
 
+        // Логирование создания фаербола
+        Bukkit.getLogger().info("UltraFireball created at " + fireball.getLocation());
 
         // Частицы и звуки для фазы зарядки
         new BukkitRunnable() {
@@ -29,10 +51,6 @@ public class DragonUltraFireballAttack {
             public void run() {
                 if (ticks >= 60) { // 3 секунды концентрации
                     startTrackingPlayer(fireball, targetPlayer, dragon, world); // Запускаем преследование игрока
-
-                    // Проигрываем звук активации маяка, когда фаербол начинает движение
-                    fireball.getWorld().playSound(fireball.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 40f, 1.0f);
-
                     this.cancel();
                 } else {
                     world.spawnParticle(Particle.DRAGON_BREATH, fireball.getLocation(), 30, 0.3, 0.3, 0.3, 0);
@@ -55,13 +73,16 @@ public class DragonUltraFireballAttack {
             public void run() {
                 // Проверка на завершение или уничтожение сферы
                 if (fireball.isDead() || !fireball.isValid()) {
+//                    Bukkit.getLogger().info("UltraFireball was destroyed or invalid at " + fireball.getLocation());
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 7.0f, false, true); // Взрыв силы 6
                     this.cancel();
                     return;
                 }
 
                 // Если цель умерла, сфера немедленно взрывается
                 if (!targetPlayer.isOnline() || targetPlayer.isDead()) {
-                    fireball.getWorld().createExplosion(fireball.getLocation(), 6.0f, false, true); // Взрыв силы 6
+//                    Bukkit.getLogger().info("UltraFireball exploded early due to player death at " + fireball.getLocation());
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 3.0f, false, true); // Взрыв силы 6
                     fireball.remove();
                     this.cancel();
                     return;
@@ -69,7 +90,8 @@ public class DragonUltraFireballAttack {
 
                 // Проверяем на окончание времени жизни сферы (10 секунд)
                 if (timeAlive >= 200) { // 10 секунд преследования
-                    fireball.getWorld().createExplosion(fireball.getLocation(), 12.0f, false, true); // Взрыв силы 20
+//                    Bukkit.getLogger().info("UltraFireball exploded after 10 seconds at " + fireball.getLocation());
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 10.0f, false, true); // Взрыв силы 20
                     fireball.remove();
                     this.cancel();
                     return;
@@ -87,7 +109,8 @@ public class DragonUltraFireballAttack {
                 for (Player player : world.getPlayers()) {
                     if (player.getLocation().distance(fireball.getLocation()) <= 2) {
                         // Наносим 3 единицы урона игроку
-                        player.damage(2.0, dragon);
+                        player.damage(3.0, dragon);
+//                        Bukkit.getLogger().info("Player " + player.getName() + " was hit by UltraFireball at " + fireball.getLocation());
                     }
                 }
 
@@ -100,6 +123,7 @@ public class DragonUltraFireballAttack {
             @Override
             public void run() {
                 if (!fireball.isDead() && fireball.isValid()) {
+//                    Bukkit.getLogger().info("UltraFireball exploded after timer at " + fireball.getLocation());
                     fireball.getWorld().createExplosion(fireball.getLocation(), 12.0f, false, true); // Взрыв силы 20
                     fireball.remove();
                 }
@@ -107,4 +131,5 @@ public class DragonUltraFireballAttack {
         }.runTaskLater(TempusEssential.getPlugin(), 200); // Взрыв через 10 секунд (200 тиков)
     }
 }
+
 
