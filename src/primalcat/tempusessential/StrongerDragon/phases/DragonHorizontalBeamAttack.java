@@ -11,7 +11,7 @@ import primalcat.tempusessential.TempusEssential;
 public class DragonHorizontalBeamAttack {
 
     private static final int MAX_LENGTH = 32; // Максимальная длина лучей
-    private static final int EXPLOSION_STEP = 3; // Шаг взрыва в блоках
+    private static final int EXPLOSION_STEP = 4; // Шаг взрыва в блоках
 
     public static void startHorizontalBeamAttack(Location CENTER_OF_ISLAND, World world) {
         // 8 направлений: восток, запад, север, юг и диагональные
@@ -26,7 +26,7 @@ public class DragonHorizontalBeamAttack {
                 new Vector(-1, 0, -1)  // Юго-запад
         };
 
-        // Создаем лучи частиц во всех 8 направлениях
+        // Выполняем создание лучей асинхронно
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -34,7 +34,7 @@ public class DragonHorizontalBeamAttack {
                     createBeam(world, CENTER_OF_ISLAND.clone(), direction);
                 }
 
-                // Через 1.5 секунды запускаем цепной взрыв
+                // Переходим обратно в основной поток для выполнения взрывов
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -44,7 +44,7 @@ public class DragonHorizontalBeamAttack {
                     }
                 }.runTaskLater(TempusEssential.getPlugin(), 30); // Задержка 1.5 секунды (30 тиков)
             }
-        }.runTask(TempusEssential.getPlugin());
+        }.runTaskAsynchronously(TempusEssential.getPlugin()); // Асинхронное выполнение
     }
 
     // Метод для создания лучей частиц
@@ -67,8 +67,14 @@ public class DragonHorizontalBeamAttack {
                     return;
                 }
 
-                Location explosionLocation = startLocation.clone().add(direction.clone().multiply(currentDistance));
-                world.createExplosion(explosionLocation, 3.0f, false, true); // Взрыв силой 6
+                // Возвращаемся в основной поток для выполнения взрывов
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Location explosionLocation = startLocation.clone().add(direction.clone().multiply(currentDistance));
+                        world.createExplosion(explosionLocation, 3f, false, true); // Взрыв силой 6
+                    }
+                }.runTask(TempusEssential.getPlugin());
 
                 // Уменьшаем текущую дистанцию на 3 блока
                 currentDistance -= EXPLOSION_STEP;
