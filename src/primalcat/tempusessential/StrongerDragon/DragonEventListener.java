@@ -11,10 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -30,7 +27,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 import primalcat.tempusessential.CustomEntityRegistry;
+import primalcat.tempusessential.TempusEssential;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -56,19 +55,123 @@ public class DragonEventListener implements Listener {
 
     @EventHandler
     public void onFireballHit(ProjectileHitEvent event) {
-        // Проверяем, является ли сущность фаерболом
-        if (event.getEntity() instanceof Fireball) {
-            Fireball fireball = (Fireball) event.getEntity();
-
-            // Проверяем, имеет ли фаербол нужные нам свойства (например, имя)
+        if (event.getEntity() instanceof Fireball fireball) {
+            // Ваш код здесь, например:
+            //
+//            // Проверяем, имеет ли фаербол нужные свойства (например, имя "UltraFireball")
             if ("UltraFireball".equals(fireball.getCustomName())) {
-                // Отменяем стандартное действие при столкновении
+
+//                System.out.println("Hit UltraFireball ground");
                 event.setCancelled(true);
-                // Останавливаем движение фаербола
+                fireball.setGravity(false);
+                fireball.setNoPhysics(true);
                 fireball.setVelocity(fireball.getVelocity().multiply(0));
+                fireball.setAcceleration(new Vector(0,0,0));
+
+            }
+
+//            event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 4F);
+        }
+    }
+    @EventHandler
+    public void onFireballDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Fireball) {
+            Fireball fireball = (Fireball) event.getDamager();
+
+            // Проверяем имя кастомного fireball'а
+            if ("UltraFireball".equals(fireball.getCustomName())) {
+//                System.out.println("UltraFireball нанес удар игроку!");
+
+                // Отменяем урон от огненного шара
+                event.setCancelled(true);
             }
         }
     }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        // Проверяем, является ли целью Эндер-Дракон
+        if (event.getEntity() instanceof EnderDragon) {
+            // Ограничиваем урон до 20 единиц
+            if (event.getDamage() > 20) {
+                event.setDamage(20);
+            }
+        }
+    }
+    @EventHandler
+    public void onEntityPortal(EntityPortalEvent event) {
+        // Проверяем, является ли сущность Эндер-Драконом
+        if (event.getEntity() instanceof EnderDragon) {
+            // Отменяем телепортацию через портал
+            event.setCancelled(true);
+        }
+    }
+//    @EventHandler
+//    public void onFireballHit(ProjectileHitEvent event) {
+//        if (event.getEntity() instanceof Fireball) {
+//            Fireball fireball = (Fireball) event.getEntity();
+//
+//            // Проверяем, имеет ли фаербол нужные свойства (например, имя "UltraFireball")
+//            if ("UltraFireball".equals(fireball.getCustomName())) {
+//                // Отключаем стандартное поведение взрыва
+//                if (event.getHitBlock() != null) {
+//                    // Воссоздаем файрбол на месте столкновения
+//                    fireball.getWorld().spawn(fireball.getLocation(), Fireball.class, fb -> {
+//                        fb.setShooter(fireball.getShooter());
+//                        fb.setDirection(fireball.getDirection());
+//                        fb.setYield(fireball.getYield());
+//                        fb.setIsIncendiary(fireball.isIncendiary());
+//                    });
+//
+//                    // Отменяем удаление оригинального файрбола
+//                    event.getEntity().remove();
+//                }
+//                event.setCancelled(true); // Отменяем обработку удара снаряда
+//            }
+//        }
+//    }
+//
+    @EventHandler
+    public void onFireballExplode(EntityExplodeEvent event) {
+        if (event.getEntity() instanceof Fireball) {
+            Fireball fireball = (Fireball) event.getEntity();
+
+            // Проверяем, имеет ли фаербол нужные свойства (например, имя "UltraFireball")
+            if ("UltraFireball".equals(fireball.getCustomName())) {
+                // Отменяем взрыв фаербола
+                event.setCancelled(true);
+            }
+        }
+    }
+//
+//    @EventHandler
+//    public void onFireballDamage(EntityDamageEvent event) {
+//        if (event.getEntity() instanceof Fireball) {
+//            Fireball fireball = (Fireball) event.getEntity();
+//
+//            // Проверяем, имеет ли фаербол нужные свойства (например, имя "UltraFireball")
+//            if ("UltraFireball".equals(fireball.getCustomName())) {
+//                // Запретить урон фаерболу
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
+
+//    @EventHandler
+//    public void onFireballHit(ProjectileHitEvent event) {
+//        // Проверяем, является ли сущность фаерболом
+//        if (event.getEntity() instanceof DragonFireball) {
+//            DragonFireball fireball = (DragonFireball) event.getEntity();
+//
+//            // Проверяем, имеет ли фаербол нужные нам свойства (например, имя)
+//            if ("UltraFireball".equals(fireball.getCustomName())) {
+//                // Отменяем стандартное действие при столкновении
+//                event.setCancelled(true);
+//                // Останавливаем движение фаербола
+//                fireball.setVelocity(fireball.getVelocity().multiply(0));
+//            }
+//        }
+//    }
 
 //    @EventHandler
 //    public void onEntityAddToWorld(EntityAddToWorldEvent event) {
@@ -102,23 +205,23 @@ public class DragonEventListener implements Listener {
 //    }
 
 
-    @EventHandler
-    public void DragonKill(EntityDeathEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof EnderDragon) {
-            entity.getPersistentDataContainer().remove(dragonEffectKey);
-        }
-        if (entity instanceof EnderDragon && event.getEntity().getKiller() != null) {
-            if (random.nextInt(10) == 0) {
-                ItemStack is = new ItemStack(Material.ENCHANTED_BOOK);
-                EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) is.getItemMeta();
-                enchantmentStorageMeta.addStoredEnchant(Enchantment.MENDING, 1, false);
-                is.setItemMeta(enchantmentStorageMeta);
-                plugin.getLogger().info(event.getEntity().getKiller() + " got mending");
-                event.getDrops().add(is);
-            }
-        }
-    }
+//    @EventHandler
+//    public void DragonKill(EntityDeathEvent event) {
+//        Entity entity = event.getEntity();
+//        if (entity instanceof EnderDragon) {
+//            entity.getPersistentDataContainer().remove(dragonEffectKey);
+//        }
+//        if (entity instanceof EnderDragon && event.getEntity().getKiller() != null) {
+//            if (random.nextInt(10) == 0) {
+//                ItemStack is = new ItemStack(Material.ENCHANTED_BOOK);
+//                EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) is.getItemMeta();
+//                enchantmentStorageMeta.addStoredEnchant(Enchantment.MENDING, 1, false);
+//                is.setItemMeta(enchantmentStorageMeta);
+//                plugin.getLogger().info(event.getEntity().getKiller() + " got mending");
+//                event.getDrops().add(is);
+//            }
+//        }
+//    }
 
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
@@ -140,6 +243,20 @@ public class DragonEventListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        World world = event.getLocation().getWorld();
+
+        // Проверяем, что мир - это The End
+
+        if (world.getEnvironment() == World.Environment.THE_END && CustomEnderDragon.isDragonAlive) {
+            // Отменяем уничтожение всех предметов взрывом
+            event.blockList().clear(); // Убираем все блоки из списка, чтобы они не были уничтожены
+            event.setCancelled(true);  // Отменяем взрыв для предметов
+        }
+
+    }
+
+    @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
         // Проверка, чтобы поршень не двигал дракона
         for (Entity entity : event.getBlock().getWorld().getNearbyEntities(event.getBlock().getLocation(), 2, 2, 2)) {
@@ -153,17 +270,15 @@ public class DragonEventListener implements Listener {
     @EventHandler
     public void onShulkerDeath(EntityDeathEvent event) {
         // Проверяем, что умершая сущность - это шалкер
-        if (event.getEntity() == EntityType.SHULKER) {
-            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        if (event.getEntity() instanceof Shulker) {
+            Shulker shulker = (Shulker) event.getEntity();
 
-            // Получаем команду, например "warden_team"
-            Team team = scoreboard.getTeam("dragon_team");
-
-            if (team != null && team.hasEntry(event.getEntity().getUniqueId().toString())) {
-                // Если шалкер в команде "warden_team", очищаем дроп
+            // Проверяем наличие нашего persist data
+            NamespacedKey key = new NamespacedKey(TempusEssential.getPlugin(), "dragon_shulker");
+            if (shulker.getPersistentDataContainer().has(key, PersistentDataType.BYTE)) {
+                // Удаляем дроп, если persist data присутствует
                 event.getDrops().clear();
             }
-
         }
     }
 
