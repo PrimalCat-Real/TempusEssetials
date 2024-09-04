@@ -8,16 +8,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.enderdragon.phases.AbstractDragonPhaseInstance;
+import net.minecraft.world.entity.boss.enderdragon.phases.DragonChargePlayerPhase;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.SpikeFeature;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,6 +30,7 @@ import primalcat.tempusessential.TempusEssential;
 import java.util.*;
 
 public class CustomEnderDragon extends EnderDragon {
+    public final AbstractDragonPhaseInstance CUSTOM_PHASE = new ChargeDragonChargePlayerPhase(this);  // Убираем Diamond operator и используем конкретный класс
     private int ticksUntilNextCrystalRespawn;
     private int ticksUntilNextPhantomSpawn;
     private int ticksUntilNextShulkerSpawn;
@@ -48,16 +49,16 @@ public class CustomEnderDragon extends EnderDragon {
     public World END_WORLD;
     public BlockPos CENTER_OF_END = new BlockPos(0, 64,0);
     public Location CENTER_LOCATION;
-    private static final int CRYSTAL_RESPAWN_MIN = 200;
-    private static final int CRYSTAL_RESPAWN_MAX = 600;
-    private static final int PHANTOM_RESPAWN_MIN = 150;
+    private static final int CRYSTAL_RESPAWN_MIN = 500;
+    private static final int CRYSTAL_RESPAWN_MAX = 900;
+    private static final int PHANTOM_RESPAWN_MIN = 100;
     private static final int PHANTOM_RESPAWN_MAX = 500;
-    private static final int SHULKER_RESPAWN_MIN = 400;
-    private static final int SHULKER_RESPAWN_MAX = 500;
+    private static final int SHULKER_RESPAWN_MIN = 300;
+    private static final int SHULKER_RESPAWN_MAX = 600;
     private static final int EXPLOSION_ATTACK_MIN = 200;
-    private static final int EXPLOSION_ATTACK_MAX = 500;
+    private static final int EXPLOSION_ATTACK_MAX = 600;
     private static final int LIGHT_ATTACK_MIN = 300;
-    private static final int LIGHT_ATTACK_MAX = 800;
+    private static final int LIGHT_ATTACK_MAX = 900;
     public static Player chargeTargetLocation;
 
     private static final int H_BEAM_ATTACK_MIN = 200;
@@ -72,6 +73,7 @@ public class CustomEnderDragon extends EnderDragon {
     private String lastHitPlayer = null;
 
 
+    public static boolean isDragonAlive =false;
 
     public CustomEnderDragon(EntityType<? extends EnderDragon> entitytypes, Level world) {
         super(entitytypes, world);
@@ -82,18 +84,20 @@ public class CustomEnderDragon extends EnderDragon {
         this.seenPlayers = new HashSet<>();
         this.isWardenSpawned = false;
         this.ultraFireballLaunched = false;
+        addToPurpleTeam(this.stringUUID);
+        this.isDragonAlive = true;
 
 
         if (world instanceof ServerLevel serverLevel) {
             this.END_WORLD = this.getBukkitLivingEntity().getWorld();
-            this.CENTER_LOCATION = new Location(END_WORLD, CENTER_OF_END.getX(), CENTER_OF_END.getY(), CENTER_OF_END.getZ() );
-
+            this.CENTER_LOCATION = new Location(END_WORLD, CENTER_OF_END.getX(), CENTER_OF_END.getY(), CENTER_OF_END.getZ());
             startEffectScheduler(END_WORLD);
-            addToPurpleTeam(this.stringUUID);
+
             this.setGlowingTag(true);
         }
-
     }
+
+
 
 
 
@@ -103,9 +107,16 @@ public class CustomEnderDragon extends EnderDragon {
         new BukkitRunnable() {
             @Override
             public void run() {
+                // Проверяем, жив ли дракон. Если он мертв, отменяем выполнение задачи.
+                if (!CustomEnderDragon.this.isAlive()) {
+                    this.cancel();
+                    return;
+                }
+
+                // Применяем эффекты к игрокам, если дракон еще жив
                 applyEffectToPlayers(world);
             }
-        }.runTaskTimer(TempusEssential.getPlugin(), 0, 100); // Проверка каждые 100 тиков (5 секунд)
+        }.runTaskTimer(TempusEssential.getPlugin(), 0, 200); // Проверка каждые 200 тиков (10 секунд)
     }
 
     // Метод для применения дебаффов к игрокам в зависимости от их радиуса
@@ -117,14 +128,14 @@ public class CustomEnderDragon extends EnderDragon {
                 double distance = player.getLocation().distance(centerLocation);
 
                 // Дебафф в радиусе 70 - 300 блоков
-                if (distance <= 300 && distance >= 90) {
+                if (distance <= 300 && distance >= 120) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 300, 1, true, true, true));
                 }
 
                 // Дебафф в радиусе 100 - 300 блоков
-                if (distance <= 300 && distance >= 110) {
+                if (distance <= 300 && distance >= 160) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 600, 3, true, true, true));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 600, 2, true, true, true));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 300, 3, true, true, true));
                 }
             });
             Collection<Entity> nearbyEntities = world.getNearbyEntities(centerLocation, 90, 90, 90);
@@ -140,10 +151,11 @@ public class CustomEnderDragon extends EnderDragon {
     @Override
     public void tick() {
         super.tick();
+
         BlockPos portalLocation = this.getDragonFight().portalLocation;
         if(portalLocation != null){
             this.CENTER_OF_END = portalLocation.above(1);
-//            System.out.println("CENTER_OF_END " + CENTER_OF_END);
+            addToPurpleTeam(this.stringUUID);
         }
 
         if (++holdingTicks >= 2000 && this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.HOLDING_PATTERN) {
@@ -152,11 +164,6 @@ public class CustomEnderDragon extends EnderDragon {
         }
 
         handleDragonAttacks();
-        // Логика фаз и атак дракона
-//        handleDragonAttacks();
-
-//        // Проверка на респавн кристаллов, фантомов и шалкеров
-//        handleEntitySpawning();
     }
 
     public void handleDragonAttacks(){
@@ -164,7 +171,7 @@ public class CustomEnderDragon extends EnderDragon {
         if (healthPercentage <= 100) {
             // Атаки при здоровье 80% и выше (например, фантомы)
             if (--this.ticksUntilNextPhantomSpawn <= 0) {
-                List<Player> players = getNearbyPlayers(100);
+                List<Player> players = getNearbyPlayers(50);
                 if (!players.isEmpty()) {
                     Player targetPlayer = players.get(random.nextInt(players.size()));
 
@@ -175,27 +182,24 @@ public class CustomEnderDragon extends EnderDragon {
                     // Здесь добавлен блок try-catch для предотвращения ClassCastException
                     if (randomBetween(1, 3) == 1 && this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.HOLDING_PATTERN) {
                         if (!players.isEmpty()) {
+//                            System.out.println("Charge player attack");
                             Player targetPlayer = players.get(random.nextInt(players.size()));
                             chargeTargetLocation = targetPlayer;
-                            DragonChargePlayerPhase customPhase = new DragonChargePlayerPhase(this);
+                            ChargeDragonChargePlayerPhase customPhase = new ChargeDragonChargePlayerPhase(this);
                             customPhase.setTarget(targetPlayer.position());
                             this.getPhaseManager().setPhase(customPhase.getPhase());
                         }
                     }
                 } catch (ClassCastException e) {
                     // Игнорируем ошибку
-                    System.out.println("ClassCastException caught: " + e.getMessage());
+                    TempusEssential.getPlugin().getLogger().warning("ClassCastException caught: "+ e.getMessage());
                 }catch (Exception e){
-                    System.out.println("Cannot change ender dragon");
+                    TempusEssential.getPlugin().getLogger().warning("Cannot change ender dragon: "+ e.getMessage());
                 }
                 ticksUntilNextPhantomSpawn = randomBetween(PHANTOM_RESPAWN_MIN, PHANTOM_RESPAWN_MAX);
 
             }
 
-//            if(--this.ticksUntilChargeAttack <= 0){
-//                DragonPillarAttack.startMultipleDragonPillarAttacks(CENTER_LOCATION, END_WORLD, randomBetween(1, 5));
-//                ticksUntilChargeAttack = randomBetween(CHARGE_ATTACK_MIN, CHARGE_ATTACK_MAX);
-//            }
             if(--this.ticksUntilLightAttack <= 0){
                 spawnLightningAtCircle(CENTER_LOCATION, randomBetween(3, 6), END_WORLD);
                 ticksUntilLightAttack = randomBetween(LIGHT_ATTACK_MIN, LIGHT_ATTACK_MAX);
@@ -213,11 +217,13 @@ public class CustomEnderDragon extends EnderDragon {
             if (--this.ticksUntilExplosionAttack <= 0) {
                 if (this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.SITTING_ATTACKING || this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.SITTING_FLAMING || this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.SITTING_SCANNING) {
                     DragonWaveAttack.startDragonAttack(CENTER_LOCATION, END_WORLD);
-                }
-                if (this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.LANDING) {
-                    DragonCircleExplosion.explodeInCircleAround(CENTER_LOCATION, randomBetween(4, 8), END_WORLD);
                     ticksUntilExplosionAttack = randomBetween(EXPLOSION_ATTACK_MIN, EXPLOSION_ATTACK_MAX);
                 }
+                if (this.getPhaseManager().getCurrentPhase().getPhase() == EnderDragonPhase.LANDING) {
+                    DragonCircleExplosion.explodeInCircleAround(CENTER_LOCATION, randomBetween(6, 9), END_WORLD);
+                    ticksUntilExplosionAttack = randomBetween(EXPLOSION_ATTACK_MIN, EXPLOSION_ATTACK_MAX);
+                }
+
             }
 
         }
@@ -232,7 +238,7 @@ public class CustomEnderDragon extends EnderDragon {
             }
 
             if(--this.ticksUntilBallAttack <= 0 ){
-                DragonFireballAttack.shootFireballsAtPlayers(getNearbyBukkitPlayers(CENTER_LOCATION, 50), this.getBukkitEntity().getLocation(), END_WORLD, 13);
+                DragonFireballAttack.shootFireballsAtPlayers(getNearbyBukkitPlayers(CENTER_LOCATION, 50), END_WORLD, 2);
                 ultraFireballLaunched = true; // Устанавливаем флаг, что атака была выполнена
                 ticksUntilBallAttack = randomBetween(BALL_ATTACK_MIN, BALL_ATTACK_MAX);
             }
@@ -324,29 +330,10 @@ public class CustomEnderDragon extends EnderDragon {
         return nearbyPlayers;
     }
 
-    private void handleEntitySpawning() {
-        if (--this.ticksUntilNextCrystalRespawn <= 0) {
-            respawnRandomCrystal();
-            ticksUntilNextCrystalRespawn = randomBetween(CRYSTAL_RESPAWN_MIN, CRYSTAL_RESPAWN_MAX);
-        }
-
-        if (--this.ticksUntilNextPhantomSpawn <= 0) {
-//            spawnRandomPhantoms();
-            ticksUntilNextPhantomSpawn = randomBetween(PHANTOM_RESPAWN_MIN, PHANTOM_RESPAWN_MAX);
-        }
-
-        if (--this.ticksUntilNextShulkerSpawn <= 0) {
-            spawnCustomShulkers();
-            ticksUntilNextShulkerSpawn = randomBetween(SHULKER_RESPAWN_MIN, SHULKER_RESPAWN_MAX);
-        }
-    }
-
     // Метод для генерации случайных значений в заданных пределах
     public static int randomBetween(int min, int max) {
         return min + new Random().nextInt(max - min + 1);
     }
-
-
 
     // Метод для спавна конкретного Варден
     public static void spawnWarden(Location spawnLocation) {
@@ -354,6 +341,11 @@ public class CustomEnderDragon extends EnderDragon {
         if (world != null) {
             // Спавн варден в заданной локации
             Warden warden = (Warden) world.spawnEntity(spawnLocation, org.bukkit.entity.EntityType.WARDEN);
+
+            warden.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).setBaseValue(100.0);
+
+            // Устанавливаем текущее здоровье на максимальное значение
+            warden.setHealth(100.0);
 
             // Дополнительные настройки для варден (если нужны)
             warden.setCustomName("Ender Warden");
@@ -399,8 +391,6 @@ public class CustomEnderDragon extends EnderDragon {
         team.addEntry(entityId);
     }
 
-
-
     private void spawnCustomShulkers() {
         // Количество шалкеров для спавна
         int shulkerCount = 1;
@@ -416,6 +406,9 @@ public class CustomEnderDragon extends EnderDragon {
 //            Shulker shulker = EntityType.SHULKER.create(this.getCommandSenderWorld());
             Shulker shulker =  (Shulker) END_WORLD.spawnEntity(CENTER_LOCATION, org.bukkit.entity.EntityType.SHULKER);
 
+            NamespacedKey key = new NamespacedKey(TempusEssential.getPlugin(), "dragon_shulker");
+            shulker.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
+
             shulker.setGlowing(true);
             shulker.clearLootTable();
             shulker.setLootTable(null);
@@ -427,61 +420,48 @@ public class CustomEnderDragon extends EnderDragon {
 
     // Спавн молний в окружности
     public static void spawnLightningAtCircle(Location midPoint, int radius, World world) {
-        Set<Location> lightningPositions = getCircularPositionsAround(midPoint, radius, 15 - radius / 10);
-
-        // Асинхронное выполнение с задержкой
+        // Асинхронная задача для вычисления позиций молний
         new BukkitRunnable() {
-            Iterator<Location> locationIterator = lightningPositions.iterator();
-
             @Override
             public void run() {
-                if (!locationIterator.hasNext()) {
-                    this.cancel(); // Завершаем выполнение, когда все молнии заспавнены
-                    return;
+                // Проверяем, что плагин активен перед выполнением задачи
+                if (!TempusEssential.getPlugin().isEnabled()) {
+                    return; // Выходим, если плагин не активен
                 }
 
-                Location lightningPos = locationIterator.next();
-                Location actualPos = new Location(world, lightningPos.getX(), world.getHighestBlockYAt(lightningPos), lightningPos.getZ());
+                Set<Location> lightningPositions = getCircularPositionsAround(midPoint, radius, 15 - radius / 10);
 
-                int yLevel = world.getHighestBlockYAt(lightningPos);
-                if (Math.abs(midPoint.getY() - yLevel) <= 20) {
-                    // Устанавливаем молнию как тихую и спавним её
-                    LightningStrike lightningBolt = world.spawn(new Location(world, lightningPos.getX(), yLevel, lightningPos.getZ()), LightningStrike.class);
-                    lightningBolt.setSilent(true);
-                }
+                // Возвращаемся в основной поток для спавна молний
+                new BukkitRunnable() {
+                    Iterator<Location> locationIterator = lightningPositions.iterator();
+
+                    @Override
+                    public void run() {
+                        // Проверяем, что плагин активен перед выполнением задачи
+                        if (!TempusEssential.getPlugin().isEnabled()) {
+                            this.cancel(); // Отменяем задачу, если плагин был отключен
+                            return;
+                        }
+
+                        if (!locationIterator.hasNext()) {
+                            this.cancel(); // Завершаем выполнение, когда все молнии заспавнены
+                            return;
+                        }
+
+                        Location lightningPos = locationIterator.next();
+                        int yLevel = world.getHighestBlockYAt(lightningPos);
+                        Location actualPos = new Location(world, lightningPos.getX(), yLevel, lightningPos.getZ());
+
+                        if (Math.abs(midPoint.getY() - yLevel) <= 20) {
+                            // Устанавливаем молнию как тихую и спавним её
+                            LightningStrike lightningBolt = world.spawn(actualPos, LightningStrike.class);
+                            lightningBolt.setSilent(true);
+                        }
+                    }
+                }.runTaskTimer(TempusEssential.getPlugin(), 0, 5); // Запуск с интервалом в 5 тиков между каждым спавном молнии
             }
-        }.runTaskTimer(TempusEssential.getPlugin(), 0, 5); // Запуск с интервалом в 5 тиков между каждым спавном молнии
+        }.runTaskAsynchronously(TempusEssential.getPlugin()); // Асинхронная подготовка данных
     }
-
-    // Взрывы по окружности
-//    public static void explodeInCircleAround(Location midPoint, int radius, World world) {
-//        Set<Location> explodePositions = getCircularPositionsAround(midPoint, radius, 15);
-//
-//        // Асинхронное выполнение с задержкой
-//        new BukkitRunnable() {
-//            Iterator<Location> locationIterator = explodePositions.iterator();
-//
-//            @Override
-//            public void run() {
-//                if (!locationIterator.hasNext()) {
-//                    this.cancel(); // Завершаем выполнение, когда все взрывы произошли
-//                    return;
-//                }
-//
-//                Location explodePos = locationIterator.next();
-//                Location actualPos = new Location(world, explodePos.getX(), world.getHighestBlockYAt(explodePos), explodePos.getZ());
-//
-//                int yLevel = world.getHighestBlockYAt(explodePos);
-//                if (Math.abs(midPoint.getY() - yLevel) <= 20) {
-//                    // Создаём взрыв без разрушения блоков
-//                    world.createExplosion(explodePos.getX(), yLevel, explodePos.getZ(), (float) (1 + getDifficulty() / 4), false, false);
-//                }
-//            }
-//        }.runTaskTimer(TempusEssential.getPlugin(), 0, 5); // Запуск с интервалом в 5 тиков между каждым взрывом
-//    }
-
-
-
 
     private static Set<Location> getCircularPositionsAround(Location start, int radius, int precision) {
         Set<Location> positions = new HashSet<>();
@@ -496,11 +476,6 @@ public class CustomEnderDragon extends EnderDragon {
 
         return positions;
     }
-    private static int getDifficulty() {
-        // Пример возвращения сложности
-        return Bukkit.getWorlds().get(0).getDifficulty().ordinal();
-    }
-
 
     private void spawnRandomPhantoms(Player targetPlayer) {
         // Количество фантомов для спавна
@@ -567,21 +542,25 @@ public class CustomEnderDragon extends EnderDragon {
     }
 
     private void updateHealthForNewPlayers() {
-        double searchRadius = 100.0D;
+        double searchRadius = 90.0D;
         List<Player> playersNearby = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(searchRadius));
 
         for (Player player : playersNearby) {
             if (seenPlayers.add(player.getUUID())) {
-                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(this.getAttribute(Attributes.MAX_HEALTH).getBaseValue() + 50.0);
+                // Получаем текущее максимальное здоровье дракона
+                double currentMaxHealth = this.getAttribute(Attributes.MAX_HEALTH).getBaseValue();
+
+                // Проверяем, чтобы максимальное здоровье не превышало 1000
+                if (currentMaxHealth + 50.0 <= 1000.0) {
+                    // Увеличиваем здоровье, если оно не превышает кап
+                    this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(currentMaxHealth + 50.0);
+                } else {
+                    // Устанавливаем здоровье на 1000, если прибавка приводит к превышению лимита
+                    this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000.0);
+                }
             }
         }
     }
-
-
-//    @Override
-//    public void setDragonFight(EndDragonFight fight) {
-//        super.setDragonFight(fight instanceof CustomDragonFight ? fight : new CustomDragonFight((ServerLevel) this.level(), this.level()., CustomDragonFight.Data.DEFAULT));
-//    }
 
     @Override
     public void setFightOrigin(BlockPos fightOrigin) {
@@ -613,38 +592,45 @@ public class CustomEnderDragon extends EnderDragon {
     protected void tickDeath() {
         super.tickDeath();
 
-        if(!showedStats){
+        if (!showedStats) {
+            this.isDragonAlive = false;
             Bukkit.getScheduler().runTask(TempusEssential.getPlugin(), () -> {
                 // Сортируем игроков по урону по убыванию
                 List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>(playerDamageMap.entrySet());
                 sortedEntries.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
+                // Собираем сообщения для всех игроков
+                List<String> messages = new ArrayList<>();
+                messages.add(ChatColor.GREEN + "Damage Summary:");
+
+
                 int rank = 1;
 
-                // Отправляем сообщение только тем игрокам, которые наносили урон
+                // Создаем сообщение для каждого игрока в списке
                 for (Map.Entry<String, Double> entry : sortedEntries) {
                     String playerName = entry.getKey();
                     double damage = Math.round(entry.getValue() * 100.0) / 100.0;
-                    ChatColor color = playerName.equals(lastHitPlayer) ? ChatColor.DARK_PURPLE : ChatColor.LIGHT_PURPLE;
+                    ChatColor color = playerName.equals(lastHitPlayer) ? ChatColor.LIGHT_PURPLE : ChatColor.GRAY;
 
-                    // Находим игрока по имени
-                    org.bukkit.entity.Player player = Bukkit.getPlayerExact(playerName);
-                    if (player != null && player.isOnline()) {
-                        if (rank == 1) {
-                            player.sendMessage(ChatColor.GOLD + "You did the most damage!");
-                        }
-                        player.sendMessage(ChatColor.GREEN + "Damage Summary:");
-                        player.sendMessage(color + "" +rank + ". " + playerName + ": " + damage + " damage");
-                    }
-
+                    messages.add(color + "" + rank + ". " + playerName + ": " + damage + " damage");
                     rank++; // Увеличиваем номер для следующего игрока
+                }
+
+                // Отправляем собранные сообщения каждому игроку в списке
+                for (Map.Entry<String, Double> entry : sortedEntries) {
+                    String playerName = entry.getKey();
+                    org.bukkit.entity.Player player = Bukkit.getPlayerExact(playerName);
+
+                    // Если игрок онлайн, отправляем ему всю статистику
+                    if (player != null && player.isOnline()) {
+                        for (String message : messages) {
+                            player.sendMessage(message);
+                        }
+                    }
                 }
             });
             this.showedStats = true;
         }
-
-
-
     }
 }
 
