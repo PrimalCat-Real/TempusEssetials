@@ -2,6 +2,8 @@ package primalcat.tempusessential;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.LargeFireball;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -10,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import primalcat.tempusessential.StrongerDragon.CustomEnderDragon;
+import primalcat.tempusessential.StrongerDragon.CustomFireball;
 import primalcat.tempusessential.StrongerDragon.CustomPhaseRegistry;
 
 import java.lang.reflect.Field;
@@ -30,5 +33,21 @@ public class CustomEntityRegistry {
             e.printStackTrace();
             Bukkit.getLogger().severe("Failed to replace Ender Dragon factory.");
         }
+
+//        try {
+//            // Получаем доступ к фабричной функции для создания огненного шара
+//            Field field = EntityType.FIREBALL.getClass().getDeclaredField("bF"); // В некоторых версиях может быть другой Field
+//            field.setAccessible(true);
+//
+//            // Заменяем фабрику на создание CustomFireball
+//            field.set(EntityType.FIREBALL, (EntityType.EntityFactory<LargeFireball>) (type, world) -> new CustomFireball(type, world));
+//
+//            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Fireball replaced with CustomFireball.");
+//            Bukkit.getLogger().info("Successfully replaced Fireball with CustomFireball.");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Bukkit.getLogger().severe("Failed to replace Fireball factory.");
+//        }
     }
+
 }
