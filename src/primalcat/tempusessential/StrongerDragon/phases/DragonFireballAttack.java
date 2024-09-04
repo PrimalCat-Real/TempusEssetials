@@ -2,42 +2,48 @@ package primalcat.tempusessential.StrongerDragon.phases;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import primalcat.tempusessential.StrongerDragon.CustomEnderDragon;
+import primalcat.tempusessential.TempusEssential;
 
 import java.util.List;
-
 public class DragonFireballAttack {
     /**
-     * Запускает фаерболы по игрокам из указанной точки.
+     * Спавнит фаерболы над головами игроков и направляет их к игрокам.
      *
      * @param players Список игроков, по которым будут запущены фаерболы.
-     * @param fireballOriginLocation Местоположение, откуда будут запускаться фаерболы.
      * @param world Мир, в котором будет происходить атака.
+     * @param speed Скорость движения фаерболов.
      */
-    public static void shootFireballsAtPlayers(List<Player> players, Location fireballOriginLocation, World world, double speed) {
-        for (Player player : players) {
-            double offsetDistance = 2 + CustomEnderDragon.randomBetween(5, 10);
+    public static void shootFireballsAtPlayers(List<Player> players, World world, double speed) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : players) {
+                    // Позиция над головой игрока на высоте 20 блоков
+                    Location fireballSpawnLocation = player.getLocation().add(0, 50, 0);
 
-            // Позиция игрока с учетом его роста (на уровне глаз)
-            Location playerLocation = player.getLocation().add(0, player.getEyeHeight(), 0);
+                    // Направление от точки спавна к игроку (вниз)
+                    Vector direction = player.getLocation().toVector().subtract(fireballSpawnLocation.toVector()).normalize();
 
-            // Вычисляем направление от дракона к игроку
-            Vector direction = playerLocation.toVector().subtract(fireballOriginLocation.toVector()).normalize();
-
-            // Смещение по направлению и подъем по оси Y на 10 блоков
-            Location fireballSpawnLocation = fireballOriginLocation.clone()
-                    .add(direction.multiply(offsetDistance))
-                    .add(0, 20, 0); // Поднимаем на 10 блоков вверх
-
-            // Спавн фаербола
-            Fireball fireball = world.spawn(fireballSpawnLocation, Fireball.class);
-            fireball.setVelocity(direction.multiply(speed));
-            fireball.setDirection(direction); // Задаем направление движения фаербола
-            fireball.setIsIncendiary(false); // Отключаем поджог
-            fireball.setYield(4.0F); // Задаем радиус взрыва
-        }
+                    // Возвращаемся в основной поток для спавна фаербола
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            // Спавним фаербол над игроком
+                            Fireball fireball = world.spawn(fireballSpawnLocation, Fireball.class);
+                            fireball.setVelocity(direction.multiply(speed)); // Задаем скорость и направление
+                            fireball.setDirection(direction); // Направляем фаербол к игроку
+                            fireball.setIsIncendiary(false); // Отключаем поджог
+                            fireball.setYield(4.0F); // Радиус взрыва фаербола
+                        }
+                    }.runTask(TempusEssential.getPlugin());
+                }
+            }
+        }.runTaskAsynchronously(TempusEssential.getPlugin()); // Асинхронная часть
     }
 }
