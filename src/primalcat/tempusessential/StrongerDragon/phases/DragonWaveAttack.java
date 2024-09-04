@@ -1,6 +1,7 @@
 package primalcat.tempusessential.StrongerDragon.phases;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -10,48 +11,79 @@ import primalcat.tempusessential.TempusEssential;
 import java.util.List;
 
 public class DragonWaveAttack {
-    public static void spawnDragonBreathAttack(Location center, double startRadius, double expandRate, int particleCount, World world) {
-        // Спавним частицы по окружности
-        for (int i = 0; i < 360; i += 360 / particleCount) {
-            double angle = Math.toRadians(i);
-            double x = center.getX() + startRadius * Math.cos(angle);
-            double z = center.getZ() + startRadius * Math.sin(angle);
 
+    // Функция для создания круга частиц и нанесения урона
+    public static void spawnDragonBreathAttack(Location center, double radius, int particleCount, World world) {
+        double angleStep = 2 * Math.PI / particleCount;
+
+        for (int i = 0; i < particleCount; i++) {
+            double angle = i * angleStep;
+            double x = center.getX() + radius * Math.cos(angle);
+            double z = center.getZ() + radius * Math.sin(angle);
             Location particleLocation = new Location(world, x, center.getY(), z);
 
-            // Спавн частицы (dragon_breath) на позиции
-            world.spawnParticle(Particle.DRAGON_BREATH, particleLocation, 0, 0, 0.00002, 0, 1);
+            // Проверка на воздух выше и ниже
+            particleLocation = adjustParticleLocation(particleLocation, world);
 
-            // Проверяем игроков в радиусе атаки
-            List<Player> players = world.getNearbyPlayers(particleLocation, 1.5).stream().toList(); // Радиус поражения
-            for (Player player : players) {
-                // Наносим урон игрокам
-                player.damage(8.0); // Урон драконьим дыханием
-            }
+            // Спавним частицу дыхания дракона только на границе
+            world.spawnParticle(Particle.DRAGON_BREATH, particleLocation, 12, 0.1, 0.1, 0.1, 0.02);
+            damagePlayersInRadius(particleLocation, world);
+
         }
     }
 
-    // Метод для старта волны атаки дракона
+    private static void damagePlayersInRadius(Location particleLocation, World world) {
+        double damageRadius = 1; // Радиус поражения
+        List<Player> players = world.getNearbyPlayers(particleLocation, damageRadius).stream().toList();
+
+        for (Player player : players) {
+            player.damage(7.0); // Наносим 8 единиц урона игрокам
+        }
+    }
+
+    // Функция для корректировки позиции спавна частицы
+    private static Location adjustParticleLocation(Location location, World world) {
+        // Проверяем блоки выше на наличие воздуха (до 8 блоков)
+        for (int i = 0; i < 8; i++) {
+            if (world.getBlockAt(location).getType() == Material.AIR) {
+                break;
+            }
+            location.add(0, 1, 0); // Поднимаем частицу на один блок вверх
+        }
+
+        // Проверяем блоки ниже на наличие твёрдой поверхности (до 8 блоков)
+        for (int i = 0; i < 8; i++) {
+            if (world.getBlockAt(location.clone().add(0, -1, 0)).getType() != Material.AIR) {
+                break;
+            }
+            location.add(0, -1, 0); // Опускаем частицу на один блок вниз
+        }
+
+        return location.add(0,1,0);
+    }
+
+    // Запускаем атаку с расширяющимся кругом частиц
     public static void startDragonAttack(Location center, World world) {
         new BukkitRunnable() {
-            double currentRadius = 0;
-            final double expandRate = 0.5; // Скорость расширения
-            final double maxRadius = 32; // Максимальный радиус
-            final int particleCount = 36; // Количество точек для частиц
+            double currentRadius = 1; // Начальный радиус (может быть 0, если хотите начать с центра)
+            final double maxRadius = 32;
 
+            final int particleCount = 36;
             @Override
             public void run() {
                 if (currentRadius > maxRadius) {
-                    this.cancel(); // Прекращаем выполнение, когда радиус достиг максимального
+                    this.cancel(); // Останавливаем задачу, если достигнут максимальный радиус
                     return;
                 }
 
-                // Вызываем метод атаки
-                spawnDragonBreathAttack(center, currentRadius, expandRate, particleCount, world);
+                // Спавним круг частиц только один раз на текущем радиусе
+                spawnDragonBreathAttack(center, currentRadius, particleCount, world);
 
-                // Увеличиваем радиус для следующего цикла
-                currentRadius += expandRate;
+                // Увеличиваем радиус круга для следующей итерации
+                currentRadius += 1.0; // Увеличиваем радиус на 1 блок каждую секунду
+
+                // Выводим текущий радиус в консоль для проверки
             }
-        }.runTaskTimer(TempusEssential.getPlugin(), 0, 2); // Интервал между расширениями - 2 тика
+        }.runTaskTimer(TempusEssential.getPlugin(), 0L, 20L); // Задача выполняется каждые 20 тиков (1 секунда)
     }
 }
