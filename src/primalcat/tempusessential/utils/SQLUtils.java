@@ -32,6 +32,14 @@ public class SQLUtils {
                     " customName TEXT NOT NULL)";
             stmt.executeUpdate(sql);
 
+            String sqlLocations = "CREATE TABLE IF NOT EXISTS player_locations " +
+                    "(player_uuid TEXT PRIMARY KEY, " +
+                    " world TEXT NOT NULL, " +
+                    " x REAL NOT NULL, " +
+                    " y REAL NOT NULL, " +
+                    " z REAL NOT NULL)";
+            stmt.executeUpdate(sqlLocations);
+
             // Закрытие соединения
             stmt.close();
             conn.close();
@@ -76,7 +84,7 @@ public class SQLUtils {
     }
 
 
-    private static Connection connectToDB(String dbPath) {
+    public static Connection connectToDB(String dbPath) {
         try {
             // Установка соединения с базой данных
             return DriverManager.getConnection("jdbc:sqlite:" + dbPath);
