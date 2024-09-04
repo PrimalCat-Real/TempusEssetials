@@ -17,6 +17,7 @@ import primalcat.tempusessential.BossesMute.BossesMute;
 import primalcat.tempusessential.CustomSign.CustomSign;
 import primalcat.tempusessential.DropChanceFix.DropChanceFix;
 import primalcat.tempusessential.KillEmptyBoats.KillEmptyBoats;
+import primalcat.tempusessential.MultiworldJoinFix.PlayerLocationListener;
 import primalcat.tempusessential.NetherPortal.CustomNetherPortalListener;
 import primalcat.tempusessential.PlayTime.PlayTimeCommand;
 import primalcat.tempusessential.PlayTime.PlayTimeIconPlaceholder;
@@ -96,8 +97,10 @@ public class TempusEssential extends JavaPlugin {
         if (getConfig().getBoolean("modules.tab-addon")) {
             getCommand("ttabname").setExecutor(new ColorTabNameCommand());
         }
+        if (getConfig().getBoolean("modules.multiworld-join-fix")) {
+            getServer().getPluginManager().registerEvents(new PlayerLocationListener(this.getDataFolder()), this);
+        }
         if (getConfig().getBoolean("modules.rapid-leaf-decay")) {
-
             getServer().getPluginManager().registerEvents(new RapidLeafDecay(), this);
         }
         if (getConfig().getBoolean("modules.drop-chances.enabled")) {
