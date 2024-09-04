@@ -35,57 +35,64 @@ public class CustomSign implements Listener {
     private boolean hologramCreated = false;
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        
+            Player player = event.getPlayer();
 
-        Action action = event.getAction();
-        ItemStack handItem = player.getInventory().getItemInMainHand();
+            Action action = event.getAction();
+            ItemStack handItem = player.getInventory().getItemInMainHand();
 
-        if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
-            Block clickedBlock = event.getClickedBlock();
-            Material blockType = clickedBlock.getType();
+            if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
+                Block clickedBlock = event.getClickedBlock();
+                Material blockType = clickedBlock.getType();
 
-            if (isSignBlock(blockType) && handItem.getType() == Material.AMETHYST_SHARD) {
-                if (!player.hasPermission("tempusessential.sethologram")) return;
-                // Создание голограммы при наличии аметистового осколка в руке
-                if (clickedBlock.getState() instanceof Sign) {
-                createTextDisplay((Sign) clickedBlock.getState(), player);
-                    clickedBlock.setType(Material.AIR); // Удаление таблички после создания голограммы
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        handItem.setAmount(handItem.getAmount() - 1); // Расход аметистового осколка, если не в режиме творчества
+                if (isSignBlock(blockType) && handItem.getType() == Material.AMETHYST_SHARD) {
+                    if (!player.hasPermission("tempusessential.sethologram")) return;
+                    // Создание голограммы при наличии аметистового осколка в руке
+                    if (clickedBlock.getState() instanceof Sign sign) {
+                        createTextDisplay(sign, player);
+                        clickedBlock.setType(Material.AIR); // Удаление таблички после создания голограммы
+                        if (player.getGameMode() != GameMode.CREATIVE) {
+                            handItem.setAmount(handItem.getAmount() - 1); // Расход аметистового осколка, если не в режиме творчества
+                        }
+                        hologramCreated = true;
                     }
-                    hologramCreated = true;
                 }
-            }
 
-            if (handItem.getType() == Material.POTION) {
-                Sign sign = (Sign) clickedBlock.getState();
-                if (sign.isGlowingText()) {
-                    sign.setGlowingText(false);
-                    sign.update();
-                    player.playSound(player.getLocation(), Sound.BLOCK_POINTED_DRIPSTONE_DRIP_WATER, 1.0f, 1.0f);
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        handItem.setAmount(handItem.getAmount() - 1); // Расход пузырька воды
-                        player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE)); // Возврат стеклянной бутылки
+
+
+
+                if (isSignBlock(blockType) && handItem.getType() == Material.POTION) {
+                    Sign sign = (Sign) clickedBlock.getState();
+                    if (sign.isGlowingText()) {
+                        sign.setGlowingText(false);
+                        sign.update();
+                        player.playSound(player.getLocation(), Sound.BLOCK_POINTED_DRIPSTONE_DRIP_WATER, 1.0f, 1.0f);
+                        if (player.getGameMode() != GameMode.CREATIVE) {
+                            handItem.setAmount(handItem.getAmount() - 1); // Расход пузырька воды
+                            player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE)); // Возврат стеклянной бутылки
+                        }
+                        event.setCancelled(true);
                     }
-                    event.setCancelled(true);
                 }
             }
-        }
 
-        if (!hologramCreated && action == Action.RIGHT_CLICK_BLOCK && handItem.getType() == Material.AMETHYST_SHARD) {
-            if (!player.hasPermission("tempusessential.removehologram")) return;
-            TextDisplay nearestDisplay = findNearestTextDisplay(player);
-            if (nearestDisplay != null) {
-                nearestDisplay.remove();
-                player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1.0f, 1.0f);
-                if (player.getGameMode() != GameMode.CREATIVE) {
-                    handItem.setAmount(handItem.getAmount() - 1);
+            if (!hologramCreated && action == Action.RIGHT_CLICK_BLOCK && handItem.getType() == Material.AMETHYST_SHARD) {
+                if (!player.hasPermission("tempusessential.removehologram")) return;
+                TextDisplay nearestDisplay = findNearestTextDisplay(player);
+                if (nearestDisplay != null) {
+                    nearestDisplay.remove();
+                    player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1.0f, 1.0f);
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        handItem.setAmount(handItem.getAmount() - 1);
+                    }
                 }
             }
-        }
 
-        // Сброс флага после обработки события
-        hologramCreated = false;
+            // Сброс флага после обработки события
+            hologramCreated = false;
+
+
+
     }
 
     private TextDisplay findNearestTextDisplay(Player player) {
