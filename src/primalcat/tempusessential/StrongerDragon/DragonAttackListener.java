@@ -46,13 +46,12 @@ public class DragonAttackListener implements Listener {
 
             // Проверяем, что атака была произведена снарядом (например, стрелой)
             if (damager instanceof Arrow || damager instanceof SpectralArrow) {
-                Arrow arrow = (Arrow) damager;
 
                 // Уменьшаем урон в 3 раза
                 event.setDamage(event.getDamage() / 3);
 
                 // Проверяем, кто выпустил стрелу
-                if (arrow.getShooter() instanceof Player) {
+                if (damager instanceof Arrow arrow && arrow.getShooter() instanceof Player) {
                     Player player = (Player) arrow.getShooter();
 
                     if (random.nextInt(8) == 0) {
