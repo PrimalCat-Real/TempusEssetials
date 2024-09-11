@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 import primalcat.tempusessential.StrongerDragon.CustomEnderDragon;
 import primalcat.tempusessential.TempusEssential;
 
+import java.util.Collections;
 import java.util.List;
 public class DragonFireballAttack {
     /**
@@ -23,8 +24,14 @@ public class DragonFireballAttack {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : players) {
-                    // Позиция над головой игрока на высоте 20 блоков
+                // Перемешиваем список игроков
+                Collections.shuffle(players);
+
+                // Берем максимум 3 случайных игроков (если их меньше 3, просто берем всех)
+                List<Player> selectedPlayers = players.subList(0, Math.min(3, players.size()));
+
+                for (Player player : selectedPlayers) {
+                    // Позиция над головой игрока на высоте 50 блоков
                     Location fireballSpawnLocation = player.getLocation().add(0, 50, 0);
 
                     // Направление от точки спавна к игроку (вниз)
@@ -39,7 +46,7 @@ public class DragonFireballAttack {
                             fireball.setVelocity(direction.multiply(speed)); // Задаем скорость и направление
                             fireball.setDirection(direction); // Направляем фаербол к игроку
                             fireball.setIsIncendiary(false); // Отключаем поджог
-                            fireball.setYield(4.0F); // Радиус взрыва фаербола
+                            fireball.setYield(1.0F); // Радиус взрыва фаербола
                         }
                     }.runTask(TempusEssential.getPlugin());
                 }

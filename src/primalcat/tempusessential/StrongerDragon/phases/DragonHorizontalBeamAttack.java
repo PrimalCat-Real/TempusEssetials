@@ -72,7 +72,7 @@ public class DragonHorizontalBeamAttack {
                     @Override
                     public void run() {
                         Location explosionLocation = startLocation.clone().add(direction.clone().multiply(currentDistance));
-                        world.createExplosion(explosionLocation, 3f, false, true); // Взрыв силой 6
+                        world.createExplosion(explosionLocation, 1f, false, true); // Взрыв силой 6
                     }
                 }.runTask(TempusEssential.getPlugin());
 

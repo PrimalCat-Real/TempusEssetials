@@ -58,7 +58,7 @@ public class DragonPillarAttack {
                         Location explosionLocation = explosionLocations.get(currentIndex);
 
                         // Выполняем взрыв в синхронном потоке
-                        world.createExplosion(explosionLocation, 3.0f, false, true);
+                        world.createExplosion(explosionLocation, 1.0f, false, true);
 
                         currentIndex++;
                     }

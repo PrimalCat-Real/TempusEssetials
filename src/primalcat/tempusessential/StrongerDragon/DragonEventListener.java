@@ -9,9 +9,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -243,15 +245,22 @@ public class DragonEventListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event) {
-        World world = event.getLocation().getWorld();
+    public void onItemBurn(EntityCombustEvent event) {
+        Entity entity = event.getEntity();
 
-        // Проверяем, что мир - это The End
+        // Проверяем, что сжигаемая сущность - это предмет и что мир - это The End
+        if (entity instanceof Item && entity.getWorld().getEnvironment() == World.Environment.THE_END && CustomEnderDragon.isDragonAlive) {
+            // Отменяем сгорание предмета
+            event.setCancelled(true);
+        }
+    }
 
-        if (world.getEnvironment() == World.Environment.THE_END && CustomEnderDragon.isDragonAlive) {
-            // Отменяем уничтожение всех предметов взрывом
-            event.blockList().clear(); // Убираем все блоки из списка, чтобы они не были уничтожены
-            event.setCancelled(true);  // Отменяем взрыв для предметов
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        // Здесь можно добавить логику при выбрасывании предмета
+        if (event.getItemDrop().getWorld().getEnvironment() == World.Environment.THE_END && CustomEnderDragon.isDragonAlive) {
+            event.getItemDrop().setHealth(9999);
         }
 
     }
@@ -266,6 +275,17 @@ public class DragonEventListener implements Listener {
             }
         }
     }
+
+//    @EventHandler
+//    public void onItemSpawn(EntitySpawnEvent event) {
+//        if (event.getEntity() instanceof Item item) {
+//            // Проверяем, что событие произошло в мире "The End"
+//            if (item.getWorld().getEnvironment() == World.Environment.THE_END) {
+//                // Присваиваем максимальное количество здоровья предметам
+//                item.setHealth(9999);
+//            }
+//        }
+//    }
 
     @EventHandler
     public void onShulkerDeath(EntityDeathEvent event) {

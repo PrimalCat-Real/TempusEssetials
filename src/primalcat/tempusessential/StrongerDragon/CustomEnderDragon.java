@@ -49,25 +49,25 @@ public class CustomEnderDragon extends EnderDragon {
     public World END_WORLD;
     public BlockPos CENTER_OF_END = new BlockPos(0, 64,0);
     public Location CENTER_LOCATION;
-    private static final int CRYSTAL_RESPAWN_MIN = 500;
-    private static final int CRYSTAL_RESPAWN_MAX = 900;
-    private static final int PHANTOM_RESPAWN_MIN = 100;
-    private static final int PHANTOM_RESPAWN_MAX = 500;
-    private static final int SHULKER_RESPAWN_MIN = 300;
-    private static final int SHULKER_RESPAWN_MAX = 600;
-    private static final int EXPLOSION_ATTACK_MIN = 200;
-    private static final int EXPLOSION_ATTACK_MAX = 600;
-    private static final int LIGHT_ATTACK_MIN = 300;
-    private static final int LIGHT_ATTACK_MAX = 900;
+    private static final int CRYSTAL_RESPAWN_MIN = 1000;
+    private static final int CRYSTAL_RESPAWN_MAX = 1800;
+    private static final int PHANTOM_RESPAWN_MIN = 200;
+    private static final int PHANTOM_RESPAWN_MAX = 1000;
+    private static final int SHULKER_RESPAWN_MIN = 600;
+    private static final int SHULKER_RESPAWN_MAX = 1200;
+    private static final int EXPLOSION_ATTACK_MIN = 400;
+    private static final int EXPLOSION_ATTACK_MAX = 1200;
+    private static final int LIGHT_ATTACK_MIN = 600;
+    private static final int LIGHT_ATTACK_MAX = 1800;
     public static Player chargeTargetLocation;
 
-    private static final int H_BEAM_ATTACK_MIN = 200;
-    private static final int H_BEAM_ATTACK_MAX = 650;
-    private static final int PILLAR_ATTACK_MIN = 250;
-    private static final int PILLAR_ATTACK_MAX = 550;
+    private static final int H_BEAM_ATTACK_MIN = 400;
+    private static final int H_BEAM_ATTACK_MAX = 1350;
+    private static final int PILLAR_ATTACK_MIN = 450;
+    private static final int PILLAR_ATTACK_MAX = 1050;
 
-    private static final int BALL_ATTACK_MIN = 150;
-    private static final int BALL_ATTACK_MAX = 300;
+    private static final int BALL_ATTACK_MIN = 750;
+    private static final int BALL_ATTACK_MAX = 1400;
 
     private final HashMap<String, Double> playerDamageMap = new HashMap<>();
     private String lastHitPlayer = null;
@@ -129,13 +129,13 @@ public class CustomEnderDragon extends EnderDragon {
 
                 // Дебафф в радиусе 70 - 300 блоков
                 if (distance <= 300 && distance >= 120) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 300, 1, true, true, true));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 100, 1, true, true, true));
                 }
 
                 // Дебафф в радиусе 100 - 300 блоков
                 if (distance <= 300 && distance >= 160) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 600, 3, true, true, true));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 300, 3, true, true, true));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 300, 2, true, true, true));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 100, 2, true, true, true));
                 }
             });
             Collection<Entity> nearbyEntities = world.getNearbyEntities(centerLocation, 90, 90, 90);
@@ -201,8 +201,10 @@ public class CustomEnderDragon extends EnderDragon {
             }
 
             if(--this.ticksUntilLightAttack <= 0){
-                spawnLightningAtCircle(CENTER_LOCATION, randomBetween(3, 6), END_WORLD);
-                ticksUntilLightAttack = randomBetween(LIGHT_ATTACK_MIN, LIGHT_ATTACK_MAX);
+                if(randomBetween(1, 10) == 4){
+                    spawnLightningAtCircle(CENTER_LOCATION, randomBetween(6, 8), END_WORLD);
+                    ticksUntilLightAttack = randomBetween(LIGHT_ATTACK_MIN, LIGHT_ATTACK_MAX);
+                }
             }
 
             if(--this.ticksUntilPillarAttack <= 0){
@@ -238,7 +240,7 @@ public class CustomEnderDragon extends EnderDragon {
             }
 
             if(--this.ticksUntilBallAttack <= 0 ){
-                DragonFireballAttack.shootFireballsAtPlayers(getNearbyBukkitPlayers(CENTER_LOCATION, 50), END_WORLD, 2);
+                DragonFireballAttack.shootFireballsAtPlayers(getNearbyBukkitPlayers(CENTER_LOCATION, 50), END_WORLD, 1);
                 ultraFireballLaunched = true; // Устанавливаем флаг, что атака была выполнена
                 ticksUntilBallAttack = randomBetween(BALL_ATTACK_MIN, BALL_ATTACK_MAX);
             }
@@ -612,7 +614,7 @@ public class CustomEnderDragon extends EnderDragon {
                     double damage = Math.round(entry.getValue() * 100.0) / 100.0;
                     ChatColor color = playerName.equals(lastHitPlayer) ? ChatColor.LIGHT_PURPLE : ChatColor.GRAY;
 
-                    messages.add(color + "" + rank + ". " + playerName + ": " + damage + " damage");
+                    messages.add(color + "" + rank + ". " + playerName + ": " + damage + " урона");
                     rank++; // Увеличиваем номер для следующего игрока
                 }
 

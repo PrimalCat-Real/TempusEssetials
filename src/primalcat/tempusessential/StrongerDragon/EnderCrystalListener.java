@@ -53,7 +53,7 @@ public class EnderCrystalListener implements Listener {
 
                 // Если у кристалла еще нет метаданных "crystalHP", назначаем их
                 if (!crystal.hasMetadata("crystalHP")) {
-                    int initialHP = random.nextInt(3) + 1; // Генерация случайного числа от 1 до 3
+                    int initialHP = random.nextInt(2) + 1; // Генерация случайного числа от 1 до 2
                     crystal.setMetadata("crystalHP", new FixedMetadataValue(plugin, initialHP));
                 }
 

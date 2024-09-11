@@ -74,7 +74,7 @@ public class DragonUltraFireballAttack {
                 // Проверка на завершение или уничтожение сферы
                 if (fireball.isDead() || !fireball.isValid()) {
 //                    Bukkit.getLogger().info("UltraFireball was destroyed or invalid at " + fireball.getLocation());
-                    fireball.getWorld().createExplosion(fireball.getLocation(), 7.0f, false, true); // Взрыв силы 6
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 4.0f, false, true); // Взрыв силы 6
                     this.cancel();
                     return;
                 }
@@ -82,7 +82,7 @@ public class DragonUltraFireballAttack {
                 // Если цель умерла, сфера немедленно взрывается
                 if (!targetPlayer.isOnline() || targetPlayer.isDead()) {
 //                    Bukkit.getLogger().info("UltraFireball exploded early due to player death at " + fireball.getLocation());
-                    fireball.getWorld().createExplosion(fireball.getLocation(), 3.0f, false, true); // Взрыв силы 6
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 2.0f, false, true); // Взрыв силы 6
                     fireball.remove();
                     this.cancel();
                     return;
@@ -91,7 +91,7 @@ public class DragonUltraFireballAttack {
                 // Проверяем на окончание времени жизни сферы (10 секунд)
                 if (timeAlive >= 200) { // 10 секунд преследования
 //                    Bukkit.getLogger().info("UltraFireball exploded after 10 seconds at " + fireball.getLocation());
-                    fireball.getWorld().createExplosion(fireball.getLocation(), 10.0f, false, true); // Взрыв силы 20
+                    fireball.getWorld().createExplosion(fireball.getLocation(), 6.0f, false, true); // Взрыв силы 20
                     fireball.remove();
                     this.cancel();
                     return;

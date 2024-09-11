@@ -54,7 +54,7 @@ public class PlayTimeIconPlaceholder extends PlaceholderExpansion {
 //        !lastIcons.get(player).equals(icon)
         if (lastIcons.get(player) != null && !lastIcons.get(player).equals(icon)) {
             String totalHoursPlayedText = PlayTimeCommand.getCorrectForm(hoursPlayed, "час", "часа", "часов");
-            String formattedMessage = player.getName() + " §7Получил награду§6 " + icon + " §7за §6" + hoursPlayed + " " + totalHoursPlayedText;
+            String formattedMessage = player.getName() + " §7Получил(а) награду§6 " + icon + " §7за §6" + hoursPlayed + " " + totalHoursPlayedText;
             showBossBarToAll(formattedMessage, BarColor.YELLOW, BarStyle.SEGMENTED_6, 1.0);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
 //            player.sendMessage("§7Получена новая награда за время: §6" + icon);

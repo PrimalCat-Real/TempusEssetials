@@ -48,17 +48,7 @@ public class DragonAttackListener implements Listener {
             if (damager instanceof Arrow || damager instanceof SpectralArrow) {
 
                 // Уменьшаем урон в 3 раза
-                event.setDamage(event.getDamage() / 3);
-
-                // Проверяем, кто выпустил стрелу
-                if (damager instanceof Arrow arrow && arrow.getShooter() instanceof Player) {
-                    Player player = (Player) arrow.getShooter();
-
-                    if (random.nextInt(8) == 0) {
-                        // Наносим урон игроку (например, молнией)
-                        player.getWorld().strikeLightning(player.getLocation());
-                    }
-                }
+                event.setDamage(event.getDamage() / 2);
             }
         }
 
@@ -76,7 +66,7 @@ public class DragonAttackListener implements Listener {
         if (victim instanceof Player && damager instanceof EnderDragon) {
             victim.setVelocity(damager.getVelocity().multiply(2));
             double originalDamage = event.getDamage();
-            double newDamage = originalDamage + 5;
+            double newDamage = originalDamage + 2;
             event.setDamage(newDamage);
             ((Player) victim).addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 60, 2));
             ((Player) victim).addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 2));

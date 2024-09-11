@@ -18,6 +18,7 @@ import primalcat.tempusessential.CustomSign.CustomSign;
 import primalcat.tempusessential.DropChanceFix.DropChanceFix;
 import primalcat.tempusessential.KillEmptyBoats.KillEmptyBoats;
 import primalcat.tempusessential.MultiworldJoinFix.PlayerLocationListener;
+import primalcat.tempusessential.MultiworldJoinFix.SaveAllPlayerLocationsCommand;
 import primalcat.tempusessential.NetherPortal.CustomNetherPortalListener;
 import primalcat.tempusessential.PlayTime.PlayTimeCommand;
 import primalcat.tempusessential.PlayTime.PlayTimeIconPlaceholder;
@@ -99,6 +100,7 @@ public class TempusEssential extends JavaPlugin {
         }
         if (getConfig().getBoolean("modules.multiworld-join-fix")) {
             getServer().getPluginManager().registerEvents(new PlayerLocationListener(this.getDataFolder()), this);
+            this.getCommand("savealllocations").setExecutor(new SaveAllPlayerLocationsCommand(getDataFolder()));
         }
         if (getConfig().getBoolean("modules.rapid-leaf-decay")) {
             getServer().getPluginManager().registerEvents(new RapidLeafDecay(), this);
@@ -144,6 +146,7 @@ public class TempusEssential extends JavaPlugin {
         if(getConfig().getBoolean("modules.stronger-dragon")){
 //            getServer().getPluginManager().registerEvents(new CustomDragonSpawnListener(), this);
 //            this.getCommand("spawndragon").setExecutor(new SpawnDragonCommand());
+
             getServer().getPluginManager().registerEvents(new DragonAttackListener(), this);
             getServer().getPluginManager().registerEvents(new DragonEventListener(this), this);
             getServer().getPluginManager().registerEvents(new EnderCrystalListener(this), this);

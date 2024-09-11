@@ -36,13 +36,15 @@ public class DropChanceFix implements Listener {
                 double dropChance = plugin.getConfig().getDouble(path + "." + dropMaterial);
 
 
+
                 // Учитываем зачарование Looting
                 int lootingLevel = entity.getKiller() != null ? entity.getKiller().getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOTING) : 0;
                 dropChance += 0.01 * lootingLevel; // Увеличиваем шанс на 1% за уровень Looting
 
-                if (random.nextDouble() > dropChance) {
-                    event.getDrops().clear();
-//                    event.getDrops().add(new ItemStack(material, 1));
+                double dropTry = random.nextDouble();
+                boolean roll = dropTry > dropChance;
+                if (roll) {
+                    event.getDrops().removeIf(item -> item.getType() == material);
                 }
             }
         }

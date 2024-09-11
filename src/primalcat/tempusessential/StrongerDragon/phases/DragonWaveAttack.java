@@ -37,7 +37,7 @@ public class DragonWaveAttack {
         List<Player> players = world.getNearbyPlayers(particleLocation, damageRadius).stream().toList();
 
         for (Player player : players) {
-            player.damage(7.0); // Наносим 8 единиц урона игрокам
+            player.damage(3.0); // Наносим 8 единиц урона игрокам
         }
     }
 

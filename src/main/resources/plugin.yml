@@ -28,3 +28,6 @@ commands:
     permission: tempusessential.colortabname
     description: "Set your tab name with a gradient."
     usage: "/ttabname #color1 #color2"
+  savealllocations:
+    description: "Сохраняет местоположения всех онлайн игроков"
+    permission: "tempus.saveall"

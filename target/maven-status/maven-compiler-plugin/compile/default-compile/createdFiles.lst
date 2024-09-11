@@ -24,10 +24,12 @@ primalcat\tempusessential\VillagerTradeModifier\VillagerTradeModifier.class
 primalcat\tempusessential\StrongerDragon\CustomEnderDragon$2$1.class
 primalcat\tempusessential\RPNames\RPNamePlaceholder.class
 primalcat\tempusessential\placeholder\DistantPlaceholder.class
+primalcat\tempusessential\CustomEnchants\EnchantsUtils.class
 primalcat\tempusessential\CustomSign\CustomSign.class
 primalcat\tempusessential\StrongerDragon\CustomEnderDragon$1.class
 primalcat\tempusessential\StrongerDragon\phases\ChargeDragonChargePlayerPhase.class
 primalcat\tempusessential\StrongerDragon\phases\DragonCircleExplosion$1.class
+primalcat\tempusessential\StrongerDragon\CustomFireball.class
 primalcat\tempusessential\StrongerDragon\phases\DragonUltraFireballAttack$2.class
 primalcat\tempusessential\StrongerDragon\phases\DragonCircleExplosion.class
 primalcat\tempusessential\StrongerDragon\phases\DragonFireballAttack.class
@@ -35,6 +37,7 @@ primalcat\tempusessential\StrongerDragon\phases\DragonHorizontalBeamAttack$1$1.c
 primalcat\tempusessential\placeholder\LocalPlaceholder.class
 primalcat\tempusessential\placeholder\Placeholder$LP.class
 primalcat\tempusessential\StrongerDragon\phases\DragonUltraFireballAttack.class
+primalcat\tempusessential\MultiworldJoinFix\SaveAllPlayerLocationsCommand.class
 primalcat\tempusessential\StrongerDragon\phases\DragonHorizontalBeamAttack$2$1.class
 primalcat\tempusessential\PlayTime\PlayTimeIconPlaceholder$1.class
 primalcat\tempusessential\TABaddon\ColorTabNameCommand.class

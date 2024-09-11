@@ -11,30 +11,31 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
+import primalcat.tempusessential.CustomEnchants.EnchantsUtils;
 
 import java.util.Collection;
 
 public class RightClickFarmland implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getPlayer().hasPermission("tempusessentials.rightclickfarmland")) {
-            return; // Если нет разрешения
-        }
-        // Проверяем, что действие - это правый клик по блоку
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
-            Block clickedBlock = event.getClickedBlock();
+        if (event.getPlayer().hasPermission("tempusessentials.rightclickfarmland") || EnchantsUtils.hasEcnhantOnItem("replenish", event.getPlayer().getItemInHand())) {
+            // Проверяем, что действие - это правый клик по блоку
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
+                Block clickedBlock = event.getClickedBlock();
 
-            // Проверяем, что блок - это растение, способное к росту
-            if (clickedBlock.getBlockData() instanceof Ageable) {
-                Ageable ageable = (Ageable) clickedBlock.getBlockData();
+                // Проверяем, что блок - это растение, способное к росту
+                if (clickedBlock.getBlockData() instanceof Ageable) {
+                    Ageable ageable = (Ageable) clickedBlock.getBlockData();
 
-                // Проверяем, достигло ли растение максимального возраста
-                if (ageable.getAge() == ageable.getMaximumAge()) {
-                    // Убираем урожай
-                    harvestCrops(event, clickedBlock, ageable);
+                    // Проверяем, достигло ли растение максимального возраста
+                    if (ageable.getAge() == ageable.getMaximumAge()) {
+                        // Убираем урожай
+                        harvestCrops(event, clickedBlock, ageable);
+                    }
                 }
             }
         }
+
     }
 
     private void harvestCrops(PlayerInteractEvent event, Block block, Ageable ageable) {
