@@ -62,26 +62,29 @@ public class TimeUtils {
     }
 
     public static Integer getHoursPlayedAsync(Player player) {
-        try{
-            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000 / 3600);
-        }catch (Exception exception){
-            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 3600;
-        }
+//        try{
+//            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000 / 3600);
+//        }catch (Exception exception){
+//            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 3600;
+//        }
+        return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 3600;
     }
 
     public static Integer getMinutesPlayedAsync(Player player) {
-        try{
-            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000 / 60);
-        }catch (Exception exception){
-            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 60;
-        }
+//        try{
+//            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000 / 60);
+//        }catch (Exception exception){
+//            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 60;
+//        }
+        return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 60;
     }
 
     public static Integer getSecondsPlayedAsync(Player player) {
-        try{
-            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000);
-        }catch (Exception exception){
-            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20;
-        }
+//        try{
+//            return Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000);
+//        }catch (Exception exception){
+//            return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20;
+//        }
+        return player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20;
     }
 }

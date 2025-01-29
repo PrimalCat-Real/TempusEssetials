@@ -6,11 +6,15 @@ description: Default plugin developed by GroupeZ
 version: 1.0.0
 api-version: 1.13
 load: STARTUP
-depend: [PlaceholderAPI,ProtocolLib]
+depend: [PlaceholderAPI,ProtocolLib, AuthMe]
 commands:
   copybook:
     description: Копирует содержимое из подписанной книги в неподписанную книгу.
     usage: /copybook
+  blackhole:
+    description: Creates a black hole at your location.
+    usage: /blackhole [duration] [cords]
+    permission: tempusessential.blackhole
   playtime:
     description: Отображает время игрока в игре
     usage: /playtime
@@ -31,3 +35,16 @@ commands:
   savealllocations:
     description: "Сохраняет местоположения всех онлайн игроков"
     permission: "tempus.saveall"
+
+  removefog:
+    description: Удаляет игрока из списка тумана.
+    usage: /removefog <игрок>
+    permission: fog.remove
+    permission-message: У вас нет прав для выполнения этой команды.
+  spawncorpse:
+    description: spawncorpse
+    usage: /spawncorpse
+
+  givemobshard:
+    description: givemobshard
+    usage: /givemobshard

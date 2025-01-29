@@ -45,12 +45,13 @@ public class PlayTimeCommand implements CommandExecutor {
         }
 
         int secondsPlayed;
-        try{
-            secondsPlayed = Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000);
-        }catch (Exception e){
-            secondsPlayed = TimeUtils.getSecondsPlayedAsync(player);
-        }
+//        try{
+//            secondsPlayed = Math.round((float) Integer.parseInt(PlaceholderAPI.setPlaceholders(player, "%plan_player_time_active_raw%")) / 1000);
+//        }catch (Exception e){
+//            secondsPlayed = TimeUtils.getSecondsPlayedAsync(player);
+//        }
 
+        secondsPlayed = TimeUtils.getSecondsPlayedAsync(player);
         TreeMap<Integer, String> milestones = rewardsManager.getMilestones(); // This needs to be implemented in your PlaytimeRewardsManager
         Integer nextMilestoneHours = milestones.higherKey(secondsPlayed / 3600);
 

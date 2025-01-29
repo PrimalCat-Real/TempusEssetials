@@ -2,6 +2,11 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="ranull-repo" />
+      <option name="name" value="ranull-repo" />
+      <option name="url" value="https://repo.ranull.com/maven/ranull/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
@@ -17,6 +22,11 @@
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="modrinth" />
+      <option name="name" value="modrinth" />
+      <option name="url" value="https://repo.modrinth.com/releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="placeholderapi" />
       <option name="name" value="placeholderapi" />
       <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
@@ -25,6 +35,11 @@
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="ranull-external-repo" />
+      <option name="name" value="ranull-external-repo" />
+      <option name="url" value="https://repo.ranull.com/maven/external/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="dmulloy2-repo" />
@@ -50,6 +65,11 @@
       <option name="id" value="purpur" />
       <option name="name" value="Purpur Maven Repo" />
       <option name="url" value="https://repo.purpurmc.org/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="codemc-repo" />
+      <option name="name" value="codemc-repo" />
+      <option name="url" value="https://repo.codemc.org/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="spigot-repo" />

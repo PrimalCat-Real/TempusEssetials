@@ -1,4 +1,288 @@
 modules:
+  quest-items:
+    enabled: true
+  custom-drops:
+    enabled: true
+    loots:
+      mobs:
+        zombie_shard: #Зомби
+          type: ZOMBIE
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 10
+
+        bogged_shard: #Болотник(скелет болот)
+          type: BOGGED
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 5
+
+        breeze_shard: #Бриз
+          type: BREEZE
+          ignore_spawner: false
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 10
+              chance: 20
+
+        cave_spider_shard: #Пещерный паук
+          type: CAVE_SPIDER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 10
+
+        creeper_shard: #Крипер
+          type: CREEPER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 10
+
+        drowned_shard: #Утопленник
+          type: CREEPER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 10
+
+        elder_guardian_shard: #Древний страж
+          type: ELDER_GUARDIAN
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 10
+              chance: 30
+
+        ender_dragon_shard: #Эндер дракон
+          type: ENDER_DRAGON
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 60
+              chance: 50
+
+        enderman_shard: #ЭНДЕРМЕН
+          type: ENDERMAN
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 4
+
+        evoker_shard: #ЗАКЛИНАТЕЛЬ(ПРИЗЫВАТЕЛЬ)
+          type: EVOKER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 5
+              chance: 10
+
+        ghast_shard: #ГАСТ
+          type: GHAST
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 3
+              chance: 10
+
+        hoglin_shard: #ХОГЛИН(БОРОВ)
+          type: HOGLIN
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 10
+
+        husk_shard: #КАДАВР(ПУСТЫННЫЙ ЗОМБИ)
+          type: HUSK
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 1
+              chance: 8
+
+        phantom_shard: #ФАНТОМ, ПИДОР
+          type: PHANTOM
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 3
+              chance: 5
+
+        piglin_shard: #ПИГЛИН
+          type: PIGLIN
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 5
+
+        piglin_brute_shard: #БРУТАЛЬНЫЙ ПИГЛИН
+          type: PIGLIN_BRUTE
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 15
+              chance: 15
+
+        shulker_shard: #ШАЛКЕР
+          type: SHULKER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 5
+              chance: 15
+
+        skeleton_shard: #СКЕЛЕТ
+          type: SKELETON
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 2
+
+        spider_shard: #ПАУК
+          type: SPIDER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 2
+
+        stray_shard: #ЗИМОГОР
+          type: STRAY
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 5
+
+        vex_shard: #ВРЕДИНА
+          type: VEX
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 2
+              chance: 5
+
+        witch_shard: #ВЕДЬМА
+          type: WITCH
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 4
+              chance: 7
+
+        wither_shard: #ВИЗЕР СКЕЛЕТ(ИССУШИТЕЛЬ)
+          type: WITHER
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 10
+              chance: 10
+
+        wither_skeleton_shard: #ВИЗЕР(ИССУШИТЕЛЬ)
+          type: WITHER_SKELETON
+          ignore_spawner: true
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 30
+              chance: 40
+
+        zombie_villager_shard: #ЗОМБИ ЖИТЕЛЬ
+          type: ZOMBIE_VILLAGER
+          ignore_spawner: false
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 5
+              chance: 5
+
+        skeleton_horse_shard: #ЛОШАДЬ-СКЕЛЕТ
+          type: SKELETON_HORSE
+          ignore_spawner: false
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 5
+              chance: 50
+
+        warden_shard: #ХРАНИТЕЛЬ, ВАРДЕН, СМОТРИТЕЛЬ
+          type: WARDEN
+          ignore_spawner: false
+          items:
+            shard_drop:
+              item: dicerp:mobshard
+              min_amount: 1
+              max_amount: 20
+              chance: 5
+  fog-danger:
+    enabled: true
+    fog-message: "Время до того как туман вас поглотит: "
+    border-percentage: 0.2 # 20% процентов от границы, то есть если мир 10к то туман будет с 2к
+    max-time-in-zone: 10 # minutes
+    allowed-dimensions:
+      - "world"
+      - "world_nether"
+  mending-from-enchanting: true
   multiworld-join-fix: true
   tab-addon: true
   rapid-leaf-decay: true
@@ -150,3 +434,11 @@ modules:
   custom-nether-portal: true
   stronger-dragon: true
   tamable-fox: true
+  resource-pack:
+    enabled: true
+  corpse:
+    enabled: true
+
+
+  custom-enchanting:
+    enabled: true
